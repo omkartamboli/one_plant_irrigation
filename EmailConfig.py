@@ -1,6 +1,5 @@
 
-
-# ------------------------------------------------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------------------------------------------
 
 smtp_username = "enter_username_here"  # This is the username used to login to your SMTP provider
 smtp_password = "enter_password_here"  # This is the password used to login to your SMTP provider
@@ -30,3 +29,4 @@ Subject: Moisture Sensor Notification
 Panic over! Plant has water again :)
 """
 
+# ---------------------------------------------------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 # Import required libraries
 import smtplib
 from smtplib import SMTPException
-from emailconfig import *
+from EmailConfig import *
 
 
 # ----------------------------------------------------------------------------------------------------------------------

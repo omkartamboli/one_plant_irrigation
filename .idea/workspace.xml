@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="84880d06-bc9a-47bb-a0d5-e9b345bed715" name="Default" comment="">
-      <change type="MOVED" beforePath="$PROJECT_DIR$/email.py" afterPath="$PROJECT_DIR$/EmailFunctions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/emailconfig.py" afterPath="$PROJECT_DIR$/emailconfig.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/emailconfig.py" afterPath="$PROJECT_DIR$/EmailConfig.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/EmailFunctions.py" afterPath="$PROJECT_DIR$/EmailFunctions.py" />
     </list>
     <ignored path="one_plant_irrigation.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -38,11 +39,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EmailFunctions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EmailFunctions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/EmailFunctions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="300">
-              <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+            <state relative-caret-position="270">
+              <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
               <folding>
                 <element signature="e#28#42#0" expanded="true" />
               </folding>
@@ -50,11 +51,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="emailconfig.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/emailconfig.py">
+      <file leaf-file-name="EmailConfig.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/EmailConfig.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="465">
-              <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
+              <caret line="31" column="119" selection-start-line="31" selection-start-column="119" selection-end-line="31" selection-end-column="119" />
               <folding />
             </state>
           </provider>
@@ -89,8 +90,9 @@
       <list>
         <option value="$PROJECT_DIR$/Stepper.py" />
         <option value="$PROJECT_DIR$/StepperFunctions.py" />
-        <option value="$PROJECT_DIR$/emailconfig.py" />
         <option value="$PROJECT_DIR$/email.py" />
+        <option value="$PROJECT_DIR$/EmailFunctions.py" />
+        <option value="$PROJECT_DIR$/emailconfig.py" />
       </list>
     </option>
   </component>
@@ -425,9 +427,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="68" y="74" width="1400" height="1000" extended-state="0" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14285715" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14285715" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -565,21 +567,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/emailconfig.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="0" selection-start-line="31" selection-start-column="0" selection-end-line="31" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/EmailFunctions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="20" column="0" selection-start-line="20" selection-start-column="0" selection-end-line="20" selection-end-column="0" />
+        <state relative-caret-position="270">
+          <caret line="18" column="22" selection-start-line="18" selection-start-column="22" selection-end-line="18" selection-end-column="22" />
           <folding>
             <element signature="e#28#42#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/EmailConfig.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="465">
+          <caret line="31" column="119" selection-start-line="31" selection-start-column="119" selection-end-line="31" selection-end-column="119" />
+          <folding />
         </state>
       </provider>
     </entry>
