@@ -10,14 +10,21 @@ from EmailConfig import *
 
 def send_email(smtp_message):
     try:
-        smtpObj = smtplib.SMTP(smtp_host, smtp_port)
-        smtpObj.login(smtp_username,
-                      smtp_password)  # If you don't need to login to your smtp provider, simply remove this line
-        smtpObj.sendmail(smtp_sender, smtp_receivers, smtp_message)
+        server = smtplib.SMTP_SSL(smtp_host, smtp_port)
+        server.login(smtp_username, smtp_password)
+        server.sendmail(smtp_sender, smtp_receivers, smtp_message)
+        server.quit()
+
         print "Successfully sent email"
 
     except SMTPException:
         print "Error: unable to send email"
 
+
+
+print "Send email: START"
+
 send_email(message_alive)
 send_email(message_dead)
+
+print "Send email: END"
