@@ -1,8 +1,19 @@
 
 # ---------------------------------------------------------------------------------------------------------------------
+#
+# PLEASE NOTE:
+#
+# If you are using gmail smtp server and your gmail account to send emails, please make sure that you allow access to
+# less secure apps to log in to your account by using following url
+# https://www.google.com/settings/security/lesssecureapps
+#
+# ---------------------------------------------------------------------------------------------------------------------
 
+
+# ---------------------------------------------------------------------------------------------------------------------
 smtp_username = "enter_username_here"  # This is the username used to login to your SMTP provider
 smtp_password = "enter_password_here"  # This is the password used to login to your SMTP provider
+
 smtp_host = "enter_host_here"  # This is the host of the SMTP provider
 smtp_port = 25  # This is the port that your SMTP provider uses
 
