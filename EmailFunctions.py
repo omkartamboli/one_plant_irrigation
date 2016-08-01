@@ -18,3 +18,6 @@ def send_email(smtp_message):
 
     except SMTPException:
         print "Error: unable to send email"
+
+send_email(message_alive)
+send_email(message_dead)
