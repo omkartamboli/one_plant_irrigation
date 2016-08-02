@@ -1,5 +1,6 @@
 # Import required libraries
 from EmailFunctions import *
+from SMSFunctions import *
 from StepperFunctions import *
 
 
@@ -13,7 +14,12 @@ def callback(MoisturePin):
         print "LED off"
 
         # Send email about watering plant
-        send_email(message_opening_tap)
+        if EnableEmailNotifications:
+            send_email(message_opening_tap)
+
+        # Send sms about watering plant
+        if EnableSMSNotifications:
+            sendOpeningTapSMS()
 
         # Open tap for 1 second
         openAndCloseTap(1)
@@ -21,15 +27,28 @@ def callback(MoisturePin):
         # Wait for 10 seconds for water to be absorbed by soil
         time.sleep(10)
 
-        # check the soil moisture level after watering the plant, send email if moisture level is not restored
+        # Check the soil moisture level after watering the plant,
         if GPIO.input(MoisturePin):
-            send_email(message_dead)
+
+            # Send email if moisture level is not restored
+            if EnableEmailNotifications:
+                send_email(message_dead)
+
+            # Send sms if moisture level is not restored
+            if EnableSMSNotifications:
+                sendDeadSMS()
 
 
     else:
         print "LED on"
+
         # Send email if moisture level is ok and no watering is required
-        send_email(message_alive)
+        if EnableEmailNotifications:
+            send_email(message_alive)
+
+        # Send sms if moisture level is ok and no watering is required
+        if EnableSMSNotifications:
+            sendLiveSMS()
 
 
 # ---------------------------------------------------------------------------------------------------------------------
