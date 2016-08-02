@@ -1,11 +1,12 @@
 # Import required libraries
 import time
 import RPi.GPIO as GPIO
+from GPIOConfig import *
 
 # ------------------------------------------------------------------------------------------------------------------------
 
 # Define GPIO signals to use
-StepPins = [22, 23, 24, 25]
+
 speed = [0.008, 0.004, 0.002, 0.001]
 oneCycleCount = 512
 
