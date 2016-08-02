@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------------------------------------------------
-# This is main file which will use all other utilities to detect the moisture and turnon the tap if moisture is less
+# This is main file which will use all other utilities to detect the moisture and turn on the tap if moisture is less
 # This will also send email notifications about current status of the plant
 # ---------------------------------------------------------------------------------------------------------------------
 
