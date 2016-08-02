@@ -1,6 +1,5 @@
 # Import required libraries
 import time
-import RPi.GPIO as GPIO
 from GPIOConfig import *
 
 # ------------------------------------------------------------------------------------------------------------------------
@@ -13,31 +12,10 @@ oneCycleCount = 512
 
 # ------------------------------------------------------------------------------------------------------------------------
 
-def setupGPIO(StepPins):
-    # Use BCM GPIO references
-    # instead of physical pin numbers
-    GPIO.setmode(GPIO.BCM)
-
-    # Set all pins as output
-    for pin in StepPins:
-        print "Setting up pin ", pin
-        GPIO.setup(pin, GPIO.OUT)
-        GPIO.output(pin, False)
-
-
-# ------------------------------------------------------------------------------------------------------------------------
-
 def resetAllPins(StepPins):
     # Set all pins to false
     for pin in StepPins:
         GPIO.output(pin, False)
-
-
-# ------------------------------------------------------------------------------------------------------------------------
-
-def cleanupGPIO():
-    print "Cleaning up IO ..."
-    GPIO.cleanup()
 
 
 # ------------------------------------------------------------------------------------------------------------------------

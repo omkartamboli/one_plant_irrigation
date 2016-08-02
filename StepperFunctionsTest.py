@@ -6,7 +6,7 @@ class StepperFunctionsTest(unittest.TestCase):
 
     def setUp(self):
         # Setup GPIO mode and pins's mode
-        setupGPIO(StepPins)
+        setupGPIOForStepperMotor(StepPins)
 
     def test_one_rev_high_speed(self):
         print "test_one_rev_high_speed: START"

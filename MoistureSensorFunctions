@@ -1,0 +1,19 @@
+# Import required libraries
+from GPIOConfig import *
+from EmailFunctions import *
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Callback function to be invoked when MoisturePin status changes
+# ---------------------------------------------------------------------------------------------------------------------
+
+def callback(MoisturePin):
+    if GPIO.input(MoisturePin):
+        print "LED off"
+        send_email(message_dead)
+    else:
+        print "LED on"
+        send_email(message_alive)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
