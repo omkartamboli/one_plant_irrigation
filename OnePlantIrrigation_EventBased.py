@@ -17,5 +17,5 @@ GPIO.add_event_callback(MoisturePin, callback)
 # TODO: Convert to cronjob
 
 while True:
-    # This line simply tells our script to wait 2 minutes, this is so the script doesnt hog all of the CPU
-    time.sleep(120)
+    # This line simply tells our script to wait few seconds, this is so the script doesnt hog all of the CPU
+    time.sleep(15)
