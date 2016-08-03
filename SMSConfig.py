@@ -19,7 +19,7 @@ FROM_NUMBER = '<Number Provided by twilio to you>'
 
 # This is the message that will be sent when moisture IS detected again
 
-sms_message_alive = """Panic over! Plant has water again :)"""
+sms_message_alive = """Enough moisture in soil. No need to water plant."""
 
 
 # This is the message that will be sent when NO moisture is detected, and opening the tap to water plant
@@ -31,7 +31,7 @@ Opening tap to water plant!!!
 
 # This is the message that will be sent when NO moisture is detected evenafter watering plant
 
-sms_message_dead = """Warning, no moisture detected, after watering plant.
+sms_message_dead = """Warning, no moisture detected, and no enough water in container.
 Please check water levels.
 
 Plant death imminent!!! :'(
