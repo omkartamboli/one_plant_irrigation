@@ -5,17 +5,38 @@
 
 
 from MoistureSensorFunctions import *
+import sys
+import traceback
+import logging
+
+# Setup GPIO for experiment
+setup_gpio()
 
 # This line tells our script to keep an eye on our gpio pin and let us know when the pin goes HIGH or LOW
 GPIO.add_event_detect(MoisturePin, GPIO.BOTH, bouncetime=300)
 
-# This line asigns a function to the GPIO pin so that when the above line tells us there is a change on the pin,
+# This line assigns a function to the GPIO pin so that when the above line tells us there is a change on the pin,
 # run this function
 GPIO.add_event_callback(MoisturePin, callback)
 
-# This is an infinite loop to keep our script running
-# TODO: Convert to cronjob
 
-while True:
-    # This line simply tells our script to wait few seconds, this is so the script doesnt hog all of the CPU
-    time.sleep(15)
+try:
+    # This is an infinite loop to keep our script running
+    while True:
+        # This line simply tells our script to wait few seconds, this is so the script doesnt hog all of the CPU
+        time.sleep(15)
+
+except KeyboardInterrupt:
+    print "Program terminated on user interrupt."
+
+except Exception as e:
+    logging.error(traceback.format_exc())
+    print e.__doc__
+    print e.message
+
+except:
+    print "Unexpected error:", sys.exc_info()[0]
+    raise
+
+finally:
+    cleanupGPIO()

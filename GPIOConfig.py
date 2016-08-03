@@ -17,6 +17,19 @@ StepPins = [22, 23, 24, 25]
 # ---------------------------------------------------------------------------------------------------------------------
 MoisturePin = 17
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# GPIO pin used by proximity sensor for triggering the sensor
+# ---------------------------------------------------------------------------------------------------------------------
+ProximityTriggerPin = 11
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# GPIO pin used by proximity sensor for detecting water level in container
+# ---------------------------------------------------------------------------------------------------------------------
+ProximityEchoPin = 13
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Configuration to enable / disable email notifications
 # ---------------------------------------------------------------------------------------------------------------------
@@ -26,6 +39,12 @@ EnableEmailNotifications = True
 # Configuration to enable / disable sms notifications
 # ---------------------------------------------------------------------------------------------------------------------
 EnableSMSNotifications = True
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Empty water container depth in cms, this will be used to detect actual water level
+# ---------------------------------------------------------------------------------------------------------------------
+ContainerDepth = 30
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -43,6 +62,15 @@ def setup_gpio():
 
     # Set Moisture sensor pin as input
     GPIO.setup(MoisturePin, GPIO.IN)
+
+    # Set Proximity sensor trigger pin as output
+    GPIO.setup(ProximityTriggerPin, GPIO.OUT)
+
+    # Set Proximity sensor echo pin as input
+    GPIO.setup(ProximityEchoPin, GPIO.IN)
+
+    # Set ProximityTriggerPin to false before we start the experiment
+    GPIO.output(ProximityTriggerPin, False)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
