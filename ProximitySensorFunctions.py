@@ -1,6 +1,8 @@
 # Import required libraries
 import time
 from GPIOConfig import *
+from dbFunctions import *
+from EventNames import *
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Water safety level is set to 2 cms, if container has less than 2 cms of water then tap will not open
@@ -56,6 +58,8 @@ def getWaterLevel():
 # ---------------------------------------------------------------------------------------------------------------------
 
 def isEnoughWaterToOpenTap():
-    return getWaterLevel() >= WaterSafetyLevel
+    waterLevel = getWaterLevel()
+    createEvent(datetime.datetime.now().time(), CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel)
+    return waterLevel >= WaterSafetyLevel
 
 # ---------------------------------------------------------------------------------------------------------------------

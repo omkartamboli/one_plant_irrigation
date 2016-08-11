@@ -1,0 +1,2 @@
+CheckWaterLevelEvent = "CheckWaterLevelEvent"
+CheckMoistureLevelEvent = "CheckMoistureLevelEvent"

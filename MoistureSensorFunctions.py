@@ -3,6 +3,7 @@ from EmailFunctions import *
 from SMSFunctions import *
 from StepperFunctions import *
 from ProximitySensorFunctions import *
+from EventNames import *
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -11,7 +12,10 @@ from ProximitySensorFunctions import *
 
 def callback(MoisturePin):
 
-    if GPIO.input(MoisturePin):
+    moisturePinStatus = GPIO.input(MoisturePin)
+    createEvent(datetime.datetime.now().time(), CheckMoistureLevelEvent, -100.00, moisturePinStatus)
+
+    if moisturePinStatus:
 
         print "LED off"
 

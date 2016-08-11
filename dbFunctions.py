@@ -37,18 +37,23 @@ def createEvent(timeStamp, eventType, eventAnalogValue, eventDigitalValue):
         print "No enough data to log event"
     else:
         dbConnection = None
-        a = datetime.datetime.strptime(timeStamp, "%b %d %Y %H:%M")
-        sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES ('%s', '%s', '%d', '%d' )",(
-            a.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, eventDigitalValue)
+
+        sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES ('%s', '%s', %d, %d)"
+
         try:
             dbConnection = getDBConnection()
 
             try:
                 # Execute the SQL command
-                dbConnection.cursor().execute(sql)
+                dbConnection.cursor().execute(sql, (timeStamp.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, eventDigitalValue))
                 # Commit your changes in the database
                 dbConnection.commit()
-            except:
+
+            except Exception as e:
+                print "Failed to create event."
+                logging.error(traceback.format_exc())
+                print e.__doc__
+                print e.message
                 # Rollback in case there is any error
                 dbConnection.rollback()
 
