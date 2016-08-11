@@ -1,0 +1,7 @@
+dataSources.ids
+dataSources.local.xml
+dataSources.xml
+deployment.xml
+sqldialects.xml
+webServers.xml
+mysql-connector-java-5.1.34-bin.jar
