@@ -13,7 +13,7 @@ from EventNames import *
 def callback(MoisturePin):
 
     moisturePinStatus = GPIO.input(MoisturePin)
-    createEvent(datetime.datetime.now().time(), CheckMoistureLevelEvent, -100.00, moisturePinStatus)
+    createEvent(CheckMoistureLevelEvent, -100.00, moisturePinStatus)
 
     if moisturePinStatus:
 

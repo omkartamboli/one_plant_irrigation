@@ -4,7 +4,7 @@ from dbConfig import *
 import MySQLdb
 import traceback
 import logging
-import datetime
+import time
 
 
 def getDBConnection():
@@ -32,20 +32,20 @@ def closeDBConnection(dbConnection):
         raise e
 
 
-def createEvent(timeStamp, eventType, eventAnalogValue, eventDigitalValue):
-    if timeStamp is None or eventType is None or (eventAnalogValue is None and eventDigitalValue is None):
+def createEvent(eventType, eventAnalogValue, eventDigitalValue):
+    if eventType is None or (eventAnalogValue is None and eventDigitalValue is None):
         print "No enough data to log event"
     else:
         dbConnection = None
 
-        sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES ('%s', '%s', %d, %d)"
+        sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES (%s, %s, %s, %s)"
 
         try:
             dbConnection = getDBConnection()
 
             try:
                 # Execute the SQL command
-                dbConnection.cursor().execute(sql, (timeStamp.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, eventDigitalValue))
+                dbConnection.cursor().execute(sql, (time.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
                 # Commit your changes in the database
                 dbConnection.commit()
 

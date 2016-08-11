@@ -59,7 +59,7 @@ def getWaterLevel():
 
 def isEnoughWaterToOpenTap():
     waterLevel = getWaterLevel()
-    createEvent(datetime.datetime.now().time(), CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel)
+    createEvent(CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel)
     return waterLevel >= WaterSafetyLevel
 
 # ---------------------------------------------------------------------------------------------------------------------
