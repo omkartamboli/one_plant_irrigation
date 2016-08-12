@@ -4,6 +4,7 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 import RPi.GPIO as GPIO
+from dbFunctions import *
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -38,7 +39,7 @@ EnableEmailNotifications = True
 # ---------------------------------------------------------------------------------------------------------------------
 # Configuration to enable / disable sms notifications
 # ---------------------------------------------------------------------------------------------------------------------
-EnableSMSNotifications = False
+EnableSMSNotifications = True
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -102,7 +103,20 @@ def cleanupGPIO():
 #
 # ---------------------------------------------------------------------------------------------------------------------
 
+def shouldSendEmail(statusType):
+    if EnableEmailNotifications and statusType != getLatestEventEmailNotification():
+        createEventNotification(statusType, True, False)
+        return True
+    else:
+        return False
 
 # ---------------------------------------------------------------------------------------------------------------------
 #
 # ---------------------------------------------------------------------------------------------------------------------
+
+def shouldSendSMS(statusType):
+    if EnableSMSNotifications and statusType != getLatestEventSMSNotification():
+        createEventNotification(statusType, False, True)
+        return True
+    else:
+        return False

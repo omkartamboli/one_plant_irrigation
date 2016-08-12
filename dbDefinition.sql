@@ -5,3 +5,12 @@ CREATE TABLE `opi`.`EventLog` (
   `eventDigitalValue` BOOL NULL,
   PRIMARY KEY (`eventTime`, `eventType`))
 COMMENT = 'Table to log events';
+
+
+CREATE TABLE `opi`.`StatusNotificationLog` (
+  `notificationTime` DATETIME NOT NULL,
+  `statusType` VARCHAR(64) NOT NULL,
+  `emailSent` BOOL NULL,
+  `smsSent` BOOL NULL,
+  PRIMARY KEY (`notificationTime`, `statusType`))
+COMMENT = 'Table to log status notifications';

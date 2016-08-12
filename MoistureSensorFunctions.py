@@ -22,11 +22,11 @@ def callback(MoisturePin):
         if isEnoughWaterToOpenTap():
 
             # Send email about watering plant
-            if EnableEmailNotifications:
+            if shouldSendEmail(MoistureLevelLowStatus) or EnableEmailNotifications:
                 send_email(message_opening_tap)
 
             # Send sms about watering plant
-            if EnableSMSNotifications:
+            if shouldSendSMS(MoistureLevelLowStatus):
                 sendOpeningTapSMS()
 
             # Open tap for 1 second
@@ -35,11 +35,11 @@ def callback(MoisturePin):
         else:
 
             # Send email if moisture level is not restored
-            if EnableEmailNotifications:
+            if shouldSendEmail(MoistureLevelLowAndWaterLevelLowStatus) or EnableEmailNotifications:
                 send_email(message_dead)
 
             # Send sms if moisture level is not restored
-            if EnableSMSNotifications:
+            if shouldSendSMS(MoistureLevelLowAndWaterLevelLowStatus):
                 sendDeadSMS()
 
     else:
@@ -47,11 +47,11 @@ def callback(MoisturePin):
         print "LED on"
 
         # Send email if moisture level is ok and no watering is required
-        if EnableEmailNotifications:
+        if shouldSendEmail(MoistureLevelOKStatus):
             send_email(message_alive)
 
         # Send sms if moisture level is ok and no watering is required
-        if EnableSMSNotifications:
+        if shouldSendSMS(MoistureLevelOKStatus):
             sendLiveSMS()
 
 
