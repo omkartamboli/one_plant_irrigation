@@ -1,46 +1,81 @@
 # Import required libraries
 from EmailFunctions import *
 from SMSFunctions import *
-from StepperFunctions import *
 from ProximitySensorFunctions import *
 from EventNames import *
+from WaterPumpFunctions import turnOnWaterPumpForNSeconds
+from dbFunctions import getAvgAnalogValueOfLastNHours
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Callback function to be invoked when MoisturePin status changes
 # ---------------------------------------------------------------------------------------------------------------------
 
-def callback(MoisturePin):
+def callback():
+    total_channels = 0
+    total_analog_value = 0
 
-    moisturePinStatus = GPIO.input(MoisturePin)
-    createEvent(CheckMoistureLevelEvent, -100.00, moisturePinStatus)
+    for channel in Moisture_ADC_Channels:
+        channel_analog_value = mcp.read_adc(channel)
+        total_analog_value += channel_analog_value
+        print "Moisture Sensors : Channel {0} analog value : {1}".format(str(channel), str(channel_analog_value))
+        total_channels += 1
 
-    if moisturePinStatus:
+    avg_analog_value = float(total_analog_value) / float(total_channels)
+    digital_value = avg_analog_value > Moisture_Low_Value
+
+    print "Moisture Sensors : Average analog value : {0} , Digital Value : {1}".format(str(avg_analog_value),
+                                                                                       str(digital_value))
+
+    if avg_analog_value > 0 and avg_analog_value < 1023:
+        createEvent(CheckMoistureLevelEvent, avg_analog_value, digital_value)
+
+    # If analog value is greater than threshold, check the avg analog value of last one hour, before opening tap,
+    # as there could be slight fluctuations in sensor readings
+
+    if digital_value:
+        avg_analog_value_of_last_hour = getAvgAnalogValueOfLastNHours(1, CheckMoistureLevelEvent)
+        if avg_analog_value_of_last_hour is None or avg_analog_value_of_last_hour <= (0.95 * Moisture_Low_Value):
+            digital_value = False
+
+    if digital_value:
 
         print "LED off"
 
-        if isEnoughWaterToOpenTap():
+        # Send email about watering plant
+        if shouldSendEmail(MoistureLevelLowStatus):
+            send_email(message_opening_tap)
 
-            # Send email about watering plant
-            if shouldSendEmail(MoistureLevelLowStatus) or EnableEmailNotifications:
-                send_email(message_opening_tap)
+        # Send sms about watering plant
+        if shouldSendSMS(MoistureLevelLowStatus):
+            sendOpeningTapSMS()
 
-            # Send sms about watering plant
-            if shouldSendSMS(MoistureLevelLowStatus):
-                sendOpeningTapSMS()
+        # Open tap for configured time second
+        turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds)
 
-            # Open tap for 1 second
-            openAndCloseTap(1)
 
-        else:
-
-            # Send email if moisture level is not restored
-            if shouldSendEmail(MoistureLevelLowAndWaterLevelLowStatus) or EnableEmailNotifications:
-                send_email(message_dead)
-
-            # Send sms if moisture level is not restored
-            if shouldSendSMS(MoistureLevelLowAndWaterLevelLowStatus):
-                sendDeadSMS()
+        # if isEnoughWaterToOpenTap():
+        #
+        #     # Send email about watering plant
+        #     if shouldSendEmail(MoistureLevelLowStatus):
+        #         send_email(message_opening_tap)
+        #
+        #     # Send sms about watering plant
+        #     if shouldSendSMS(MoistureLevelLowStatus):
+        #         sendOpeningTapSMS()
+        #
+        #     # Open tap for configured time second
+        #     turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds)
+        #
+        # else:
+        #
+        #     # Send email if moisture level is not restored
+        #     if shouldSendEmail(MoistureLevelLowAndWaterLevelLowStatus):
+        #         send_email(message_dead)
+        #
+        #     # Send sms if moisture level is not restored
+        #     if shouldSendSMS(MoistureLevelLowAndWaterLevelLowStatus):
+        #         sendDeadSMS()
 
     else:
 
@@ -53,6 +88,5 @@ def callback(MoisturePin):
         # Send sms if moisture level is ok and no watering is required
         if shouldSendSMS(MoistureLevelOKStatus):
             sendLiveSMS()
-
 
 # ---------------------------------------------------------------------------------------------------------------------

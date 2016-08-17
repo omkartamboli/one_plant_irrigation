@@ -4,7 +4,9 @@
 # ---------------------------------------------------------------------------------------------------------------------
 
 import RPi.GPIO as GPIO
+import Adafruit_MCP3008
 from dbFunctions import *
+from EventNames import *
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -14,9 +16,9 @@ StepPins = [22, 23, 24, 25]
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# GPIO pin used by moisture sensor for detecting moisture level
+# GPIO pin used by water pump
 # ---------------------------------------------------------------------------------------------------------------------
-MoisturePin = 17
+WaterPumpPin = 22
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -36,16 +38,57 @@ ProximityEchoPin = 13
 # ---------------------------------------------------------------------------------------------------------------------
 EnableEmailNotifications = True
 
+
 # ---------------------------------------------------------------------------------------------------------------------
 # Configuration to enable / disable sms notifications
 # ---------------------------------------------------------------------------------------------------------------------
-EnableSMSNotifications = True
+EnableSMSNotifications = False
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Empty water container depth in cms, this will be used to detect actual water level
 # ---------------------------------------------------------------------------------------------------------------------
 ContainerDepth = 30
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Analog input channels for moisture sensors
+# ---------------------------------------------------------------------------------------------------------------------
+Moisture_ADC_Channels = [0,1]
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Analog input channels for moisture sensors
+# ---------------------------------------------------------------------------------------------------------------------
+Moisture_Low_Value = float(200.00)
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Software SPI configuration:
+# ---------------------------------------------------------------------------------------------------------------------
+CLK = 18
+MISO = 23
+MOSI = 24
+CS = 25
+
+# Set ADC variables
+mcp = Adafruit_MCP3008.MCP3008(clk=CLK, cs=CS, miso=MISO, mosi=MOSI)
+
+# ---------------------------------------------------------------------------------------------------------------------
+# configuration to generate graph for last how many number of hours
+# ---------------------------------------------------------------------------------------------------------------------
+graph_no_of_hours = 72
+
+# ---------------------------------------------------------------------------------------------------------------------
+# configuration to generate data for last how many number of hours
+# ---------------------------------------------------------------------------------------------------------------------
+data_no_of_hours = 1
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Time to keep pump on in seconds
+# ---------------------------------------------------------------------------------------------------------------------
+timeToKeppPumpOnInSeconds = 3
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -59,10 +102,12 @@ ContainerDepth = 30
 # ---------------------------------------------------------------------------------------------------------------------
 
 def setup_gpio():
-    setupGPIOForStepperMotor(StepPins)
 
-    # Set Moisture sensor pin as input
-    GPIO.setup(MoisturePin, GPIO.IN)
+    GPIO.setmode(GPIO.BCM)
+    # setupGPIOForStepperMotor(StepPins) -- Not using stepper motor now
+
+    # Set water pump pin as output
+    GPIO.setup(WaterPumpPin, GPIO.OUT)
 
     # Set Proximity sensor trigger pin as output
     GPIO.setup(ProximityTriggerPin, GPIO.OUT)
@@ -72,7 +117,6 @@ def setup_gpio():
 
     # Set ProximityTriggerPin to false before we start the experiment
     GPIO.output(ProximityTriggerPin, False)
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Util method to setup GPIO for Stepper Motor
@@ -104,7 +148,9 @@ def cleanupGPIO():
 # ---------------------------------------------------------------------------------------------------------------------
 
 def shouldSendEmail(statusType):
-    if EnableEmailNotifications and statusType != getLatestEventEmailNotification():
+    if EnableEmailNotifications and (statusType != getLatestEventEmailNotification() or
+                                             MoistureLevelLowStatus == statusType or
+                                             MoistureLevelLowAndWaterLevelLowStatus == statusType):
         createEventNotification(statusType, True, False)
         return True
     else:

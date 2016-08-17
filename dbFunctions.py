@@ -5,6 +5,7 @@ import MySQLdb
 import traceback
 import logging
 import time
+from EventNames import CheckMoistureLevelEvent
 
 
 def getDBConnection():
@@ -46,7 +47,7 @@ def createEvent(eventType, eventAnalogValue, eventDigitalValue):
             try:
                 # Execute the SQL command
                 dbConnection.cursor().execute(sql, (
-                time.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
+                    time.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
                 # Commit your changes in the database
                 dbConnection.commit()
 
@@ -105,6 +106,7 @@ def getLatestEventEmailNotification():
         if dbConnection is not None:
             closeDBConnection(dbConnection)
 
+
 def getLatestEventSMSNotification():
     dbConnection = None
 
@@ -141,8 +143,9 @@ def getLatestEventSMSNotification():
         if dbConnection is not None:
             closeDBConnection(dbConnection)
 
+
 def createEventNotification(statusType, emailSent, smsSent):
-    if statusType is None :
+    if statusType is None:
         print "No enough data to log event notification"
     else:
         dbConnection = None
@@ -160,7 +163,7 @@ def createEventNotification(statusType, emailSent, smsSent):
             try:
                 # Execute the SQL command
                 dbConnection.cursor().execute(sql, (
-                time.strftime('%Y-%m-%d %H:%M:%S'), statusType, emailSent, smsSent))
+                    time.strftime('%Y-%m-%d %H:%M:%S'), statusType, emailSent, smsSent))
                 # Commit your changes in the database
                 dbConnection.commit()
 
@@ -181,3 +184,73 @@ def createEventNotification(statusType, emailSent, smsSent):
         finally:
             if dbConnection is not None:
                 closeDBConnection(dbConnection)
+
+
+def getEventLogOfLastNHours(noOfHours):
+    dbConnection = None
+
+    sql = "SELECT eventTime, eventAnalogValue FROM EventLog WHERE (eventTime > DATE_SUB(NOW(), INTERVAL %s HOUR)) AND eventType = %s ORDER BY eventTime DESC"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, (noOfHours, CheckMoistureLevelEvent))
+
+            if cursor.rowcount > 0:
+                return cursor.fetchall()
+            else:
+                return None
+
+        except Exception as e:
+            print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+            logging.error(traceback.format_exc())
+            print e.__doc__
+            print e.message
+
+    except Exception as e:
+        print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+        logging.error(traceback.format_exc())
+        print e.__doc__
+        print e.message
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
+
+
+def getAvgAnalogValueOfLastNHours(noOfHours, eventName):
+    dbConnection = None
+
+    sql = "SELECT AVG(eventAnalogValue) FROM EventLog WHERE (eventTime > DATE_SUB(NOW(), INTERVAL %s HOUR)) AND eventType = %s ORDER BY eventTime DESC"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, (noOfHours, eventName))
+
+            if cursor.rowcount > 0:
+                return cursor.fetchone()[0]
+            else:
+                return None
+
+        except Exception as e:
+            print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+            logging.error(traceback.format_exc())
+            print e.__doc__
+            print e.message
+
+    except Exception as e:
+        print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+        logging.error(traceback.format_exc())
+        print e.__doc__
+        print e.message
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
