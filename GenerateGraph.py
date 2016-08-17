@@ -29,8 +29,7 @@ def plot_graph(isOnline):
                 name="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
                 text="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
                 hoverinfo="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
-                line=dict(shape='spline', color='rgb(0, 255, 0)'
-                )
+                line=dict(shape='linear', color='rgb(0, 255, 0)')
             )
 
             trace2 = go.Scatter(
@@ -64,7 +63,6 @@ def plot_graph(isOnline):
                 print "Plotting offline graph"
 
             py.image.save_as(fig, "./static/graph.png")
-
 
         else:
             logging.warn("No Event log data for last {0} hours".format(str(graph_no_of_hours)))
