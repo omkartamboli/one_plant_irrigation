@@ -253,3 +253,42 @@ def getAvgAnalogValueOfLastNHours(noOfHours, eventName):
     finally:
         if dbConnection is not None:
             closeDBConnection(dbConnection)
+
+
+def getConfigValue(propertyName):
+
+    if propertyName is None:
+        return None
+
+    dbConnection = None
+
+    sql = "SELECT value FROM AppConfig WHERE property = %s"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, propertyName)
+
+            if cursor.rowcount > 0:
+                return cursor.fetchone()[0]
+            else:
+                return None
+
+        except Exception as e:
+            print "Failed to fetch config information for {0} property".format(str(propertyName))
+            logging.error(traceback.format_exc())
+            print e.__doc__
+            print e.message
+
+    except Exception as e:
+        print "Failed to fetch config information for {0} property".format(str(propertyName))
+        logging.error(traceback.format_exc())
+        print e.__doc__
+        print e.message
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)

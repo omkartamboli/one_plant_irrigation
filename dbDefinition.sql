@@ -14,3 +14,11 @@ CREATE TABLE `opi`.`StatusNotificationLog` (
   `smsSent` BOOL NULL,
   PRIMARY KEY (`notificationTime`, `statusType`))
 COMMENT = 'Table to log status notifications';
+
+
+CREATE TABLE `opi`.`AppConfig` (
+  `property` VARCHAR(128) NOT NULL,
+  `value` VARCHAR(128),
+  `modificationTime` DATETIME,
+  PRIMARY KEY (`property`))
+COMMENT = 'Table to store AppConfig';

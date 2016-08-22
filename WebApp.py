@@ -1,5 +1,5 @@
 from flask import *
-from dbFunctions import getEventLogOfLastNHours
+from dbFunctions import getEventLogOfLastNHours,getConfigValue
 from GPIOConfig import data_no_of_hours,graph_no_of_hours, maxTimeToKeepPumpOnInSeconds
 from WebAppConfig import *
 import logging
@@ -16,6 +16,32 @@ def moistureStatus():
                  eventAnalogValue=row[1]) for row in result]
 
     return render_template('index.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data)
+
+
+@app.route("/validate", methods=['GET'])
+def validate_get():
+    return render_template('validate.html')
+
+
+@app.route("/validate", methods=['POST'])
+def validate_post():
+    _apiKey = request.form['apiKey']
+
+    if _apiKey is None:
+        print "form api key is null"
+        return render_template('validate.html', message="Invalid API Key")
+
+    apiKeyConfig = getConfigValue("viewConfigApiKey")
+
+    if apiKeyConfig is None:
+        print "db api key is null"
+        return render_template('validate.html', message="Invalid API Key")
+
+    # validate the received values
+    if _apiKey == apiKeyConfig:
+        return render_template('appConfig.html', message="Valid API Key")
+    else:
+        return render_template('validate.html', message="Invalid API Key")
 
 @app.route("/turnOnTap")
 def turnOnTap():
