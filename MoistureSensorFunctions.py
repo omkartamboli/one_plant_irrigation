@@ -5,6 +5,8 @@ from ProximitySensorFunctions import *
 from EventNames import *
 from WaterPumpFunctions import turnOnWaterPumpForNSeconds
 from dbFunctions import getAvgAnalogValueOfLastNHours
+from DHTFunctions import recordTemperatureAndHumidity
+import datetime
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -16,7 +18,7 @@ def callback():
     total_analog_value = 0
 
     for channel in Moisture_ADC_Channels:
-        channel_analog_value = mcp.read_adc(channel)
+        channel_analog_value = mcp.read_adc(channel) - Moisture_Offset_Value
         total_analog_value += channel_analog_value
         print "Moisture Sensors : Channel {0} analog value : {1}".format(str(channel), str(channel_analog_value))
         total_channels += 1
@@ -27,8 +29,13 @@ def callback():
     print "Moisture Sensors : Average analog value : {0} , Digital Value : {1}".format(str(avg_analog_value),
                                                                                        str(digital_value))
 
-    if avg_analog_value > 0 and avg_analog_value < 1023:
-        createEvent(CheckMoistureLevelEvent, avg_analog_value, digital_value)
+    eventTime = datetime.datetime.now()
+
+    # Record temperature and humidity
+    recordTemperatureAndHumidity(eventTime)
+
+    if (0 - Moisture_Offset_Value) < avg_analog_value < (1023 - Moisture_Offset_Value):
+        createEvent(CheckMoistureLevelEvent, avg_analog_value, digital_value, eventTime)
 
     # If analog value is greater than threshold, check the avg analog value of last one hour, before opening tap,
     # as there could be slight fluctuations in sensor readings
@@ -37,6 +44,7 @@ def callback():
         avg_analog_value_of_last_hour = getAvgAnalogValueOfLastNHours(1, CheckMoistureLevelEvent)
         if avg_analog_value_of_last_hour is None or avg_analog_value_of_last_hour <= (0.95 * Moisture_Low_Value):
             digital_value = False
+
 
     if digital_value:
 

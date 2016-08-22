@@ -5,12 +5,13 @@ from WebAppConfig import *
 import logging
 import traceback
 from WaterPumpFunctions import turnOnWaterPumpForNSecondsStandAloneMode
+from EventNames import CheckMoistureLevelEvent
 
 app = Flask(__name__, static_url_path='')
 
 @app.route("/moistureStatus")
 def moistureStatus():
-    result = getEventLogOfLastNHours(data_no_of_hours)
+    result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 

@@ -2,10 +2,11 @@ from GPIOConfig import *
 import sys
 
 
-def turnOnWaterPumpForNSeconds(secondsInFloat):
+def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
     GPIO.output(WaterPumpPin, True)
     time.sleep(secondsInFloat)
     GPIO.output(WaterPumpPin, False)
+    createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
 
 
 def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
@@ -15,7 +16,7 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(WaterPumpPin, GPIO.OUT)
 
-        turnOnWaterPumpForNSeconds(secondsInFloat)
+        #turnOnWaterPumpForNSeconds(secondsInFloat)
 
     except KeyboardInterrupt:
         print "Program terminated on user interrupt."

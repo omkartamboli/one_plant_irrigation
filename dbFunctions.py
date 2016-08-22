@@ -5,7 +5,6 @@ import MySQLdb
 import traceback
 import logging
 import time
-from EventNames import CheckMoistureLevelEvent
 
 
 def getDBConnection():
@@ -33,7 +32,7 @@ def closeDBConnection(dbConnection):
         raise e
 
 
-def createEvent(eventType, eventAnalogValue, eventDigitalValue):
+def createEvent(eventType, eventAnalogValue, eventDigitalValue, eventTime):
     if eventType is None or (eventAnalogValue is None and eventDigitalValue is None):
         print "No enough data to log event"
     else:
@@ -47,7 +46,7 @@ def createEvent(eventType, eventAnalogValue, eventDigitalValue):
             try:
                 # Execute the SQL command
                 dbConnection.cursor().execute(sql, (
-                    time.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
+                    eventTime.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
                 # Commit your changes in the database
                 dbConnection.commit()
 
@@ -186,7 +185,7 @@ def createEventNotification(statusType, emailSent, smsSent):
                 closeDBConnection(dbConnection)
 
 
-def getEventLogOfLastNHours(noOfHours):
+def getEventLogOfLastNHours(noOfHours, eventName):
     dbConnection = None
 
     sql = "SELECT eventTime, eventAnalogValue FROM EventLog WHERE (eventTime > DATE_SUB(NOW(), INTERVAL %s HOUR)) AND eventType = %s ORDER BY eventTime DESC"
@@ -197,7 +196,7 @@ def getEventLogOfLastNHours(noOfHours):
         try:
             # Execute the SQL command
             cursor = dbConnection.cursor()
-            cursor.execute(sql, (noOfHours, CheckMoistureLevelEvent))
+            cursor.execute(sql, (noOfHours, eventName))
 
             if cursor.rowcount > 0:
                 return cursor.fetchall()

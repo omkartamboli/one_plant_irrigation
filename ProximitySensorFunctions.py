@@ -68,9 +68,9 @@ def getWaterLevel():
 # Function to find out if container has water more than safety level
 # ---------------------------------------------------------------------------------------------------------------------
 
-def isEnoughWaterToOpenTap():
+def isEnoughWaterToOpenTap(eventTime):
     waterLevel = getWaterLevel()
-    createEvent(CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel)
+    createEvent(CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel, eventTime)
     return waterLevel >= WaterSafetyLevel
 
 # ---------------------------------------------------------------------------------------------------------------------

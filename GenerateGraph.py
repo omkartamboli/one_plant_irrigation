@@ -3,69 +3,150 @@ import plotly.graph_objs as go
 from GPIOConfig import graph_no_of_hours, Moisture_Low_Value
 from dbFunctions import *
 from GraphConfig import *
+from EventNames import *
 
 
 def plot_graph(isOnline):
-    result = getEventLogOfLastNHours(graph_no_of_hours)
+    result1 = getEventLogOfLastNHours(graph_no_of_hours, CheckMoistureLevelEvent)
+    result2 = getEventLogOfLastNHours(graph_no_of_hours, WaterPlantEvent)
+    result3 = getEventLogOfLastNHours(graph_no_of_hours, CheckTemperatureEvent)
+    result4 = getEventLogOfLastNHours(graph_no_of_hours, CheckHumidityEvent)
+
+    trace0 = None
+    trace1 = None
+    trace2 = None
+    trace3 = None
+    trace4 = None
 
     try:
-        if result is not None:
+        if result1 is not None:
 
             i = 0
-            x1 = [None] * len(result)
-            x2 = [None] * len(result)
-            y1 = [None] * len(result)
-            y2 = [None] * len(result)
-            for row in result:
+            x1 = [None] * len(result1)
+            y1 = [None] * len(result1)
+            y0 = [None] * len(result1)
+            for row in result1:
                 x1[i] = row[0]
-                x2[i] = i
                 y1[i] = float(row[1])
-                y2[i] = Moisture_Low_Value
+                y0[i] = Moisture_Low_Value
                 i += 1
+
+            trace0 = go.Scatter(
+                x=x1,
+                y=y0,
+                name='Moisture low reference line',
+                text='Moisture low reference line',
+                hoverinfo='Moisture low reference line',
+                line=dict(color='rgb(255, 0, 0)', width=1, dash='dot')
+            )
 
             trace1 = go.Scatter(
                 x=x1,
                 y=y1,
-                name="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
-                text="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
-                hoverinfo="Moisture data for last {0} hours".format(str(graph_no_of_hours)),
-                line=dict(shape='linear', color='rgb(0, 255, 0)')
+                name="Soil Moisture",
+                text="Soil Moisture",
+                hoverinfo="Soil Moisture",
+                line=dict(shape='spline', color='rgb(0, 255, 0)')
             )
+
+        if result2 is not None:
+            j = 0
+            x2 = [None] * len(result2)
+            y2 = [None] * len(result2)
+            z2 = [None] * len(result2)
+            colorarray = [None] * len(result2)
+            opacityArray = [None] * len(result2)
+
+            for row2 in result2:
+                x2[j] = row2[0]
+                y2[j] = Moisture_Low_Value + 10
+                z2[j] = float(row2[1]*4)
+                colorarray[j] = 'rgb(0, 0, 255)'
+                opacityArray[j] = 0.5
 
             trace2 = go.Scatter(
-                x=x1,
+                x=x2,
                 y=y2,
-                name='Moisture Low reference line',
-                text='Moisture Low reference line',
-                hoverinfo='Moisture Low reference line',
-                line=dict(color='rgb(255, 0, 0)', width=1, dash='dot')
-            )
-
-            data = [trace1, trace2]
-            layout = dict(
-                legend=dict(
-                    y=5,
-                    traceorder='reversed',
-                    font=dict(
-                        size=16
-                    )
+                name='Water Release Events',
+                text='Water Release Events',
+                hoverinfo='Water Release Events',
+                mode='markers',
+                marker=dict(
+                    color=colorarray,
+                    opacity=opacityArray,
+                    size=z2
                 )
             )
 
-            fig = dict(data=data, layout=layout)
-            py.sign_in(plotly_username, plotly_api_key)
+        if result3 is not None:
+            k = 0
+            x3 = [None] * len(result3)
+            y3 = [None] * len(result3)
 
-            if isOnline:
-                print "Plotting online graph"
-                py.plot(fig, filename='line-shapes')
+            for row3 in result3:
+                x3[k] = row3[0]
+                y3[k] = float(row3[1])
 
-            else:
-                print "Plotting offline graph"
+                k += 1
 
-            py.image.save_as(fig, "./static/graph.png")
+            trace3 = go.Scatter(
+                x=x3,
+                y=y3,
+                name="Temperature",
+                text="Temperature",
+                hoverinfo="Temperature",
+                line=dict(shape='spline', color='rgb(255, 165, 0)')
+            )
+
+        if result4 is not None:
+            l = 0
+            x4 = [None] * len(result4)
+            y4 = [None] * len(result4)
+
+            for row4 in result4:
+                x4[l] = row4[0]
+                y4[l] = float(row4[1])
+
+                l += 1
+
+            trace4 = go.Scatter(
+                x=x4,
+                y=y4,
+                name="Humidity",
+                text="Humidity",
+                hoverinfo="Humidity",
+                line=dict(shape='spline', color='rgb(148, 0, 211)')
+            )
+
+        if result2 is not None and len(result2) > 0:
+            data = [trace0, trace1, trace2, trace3, trace4]
+        else:
+            data = [trace0, trace1, trace3, trace4]
+
+        layout = dict(
+            legend=dict(
+                y=5,
+                traceorder='reversed',
+                font=dict(
+                    size=16
+                )
+            )
+        )
+
+        fig = dict(data=data, layout=layout)
+        py.sign_in(plotly_username, plotly_api_key)
+
+        if isOnline:
+            print "Plotting online graph"
+            py.plot(fig, filename='OnePlantIrrigation')
 
         else:
-            logging.warn("No Event log data for last {0} hours".format(str(graph_no_of_hours)))
+            print "Plotting offline graph"
+
+        py.image.save_as(fig, "./static/graph.png")
+
+
+        # logging.warn("No Event log data for last {0} hours".format(str(graph_no_of_hours)))
 
     except Exception as e:
         logging.error(traceback.format_exc())
@@ -76,6 +157,7 @@ def plot_graph(isOnline):
     except:
         logging.error(traceback.format_exc())
         print "Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours))
+
 
 if __name__ == "__main__":
     plot_graph(True)
