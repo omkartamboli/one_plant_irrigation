@@ -6,8 +6,13 @@ import logging
 import traceback
 from WaterPumpFunctions import turnOnWaterPumpForNSecondsStandAloneMode
 from EventNames import CheckMoistureLevelEvent
+from flask.ext.mobility import Mobility
+from flask.ext.mobility.decorators import mobile_template
+
 
 app = Flask(__name__, static_url_path='')
+
+phones = ["iphone", "android", "blackberry"]
 
 @app.route("/moistureStatus")
 def moistureStatus():
@@ -15,7 +20,7 @@ def moistureStatus():
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('index.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data)
+    return render_template('index.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data, isMobileRequest=isMobileRequest(request))
 
 
 @app.route("/validate", methods=['GET'])
@@ -65,6 +70,11 @@ def turnOnTap():
         message = "Plant watered for {0} seconds".format(str(noOfSecondsAsFloat))
 
     return render_template('turnOnTap.html',message=message)
+
+def isMobileRequest(request):
+    agent = request.headers.get('User-Agent')
+    return any(phone in agent.lower() for phone in phones)
+
 
 if __name__ == "__main__":
     context = (ssl_certfile_location, ssl_keyfile_location)

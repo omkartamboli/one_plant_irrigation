@@ -94,7 +94,7 @@ def plot_graph(isOnline):
                 name="Temperature",
                 text="Temperature",
                 hoverinfo="Temperature",
-                line=dict(shape='spline', color='rgb(255, 165, 0)')
+                line=dict(shape='spline', color='rgb(255,99,71)')
             )
 
         if result4 is not None:
