@@ -1,6 +1,6 @@
 import plotly.plotly as py
 import plotly.graph_objs as go
-from GPIOConfig import graph_no_of_hours, Moisture_Low_Value
+from GPIOConfig import graph_no_of_hours, Moisture_Low_Value, Water_Low_Value_Percentage, ContainerDepth
 from dbFunctions import *
 from GraphConfig import *
 from EventNames import *
@@ -11,12 +11,15 @@ def plot_graph(isOnline):
     result2 = getEventLogOfLastNHours(graph_no_of_hours, WaterPlantEvent)
     result3 = getEventLogOfLastNHours(graph_no_of_hours, CheckTemperatureEvent)
     result4 = getEventLogOfLastNHours(graph_no_of_hours, CheckHumidityEvent)
+    result5 = getEventLogOfLastNHours(graph_no_of_hours, CheckWaterLevelEvent)
 
     trace0 = None
+    trace00 = None
     trace1 = None
     trace2 = None
     trace3 = None
     trace4 = None
+    trace5 = None
 
     try:
         if result1 is not None:
@@ -113,10 +116,42 @@ def plot_graph(isOnline):
                 line=dict(shape='spline', color='rgb(148, 0, 211)')
             )
 
+        if result5 is not None:
+
+            m = 0
+
+            x5 = [None] * len(result5)
+            y5 = [None] * len(result5)
+            y00 = [None] * len(result5)
+            for row5 in result5:
+                x5[m] = row5[0]
+                y5[m] = (float(row5[1]) / ContainerDepth) * 100
+                y00[m] = Water_Low_Value_Percentage
+                m += 1
+
+            trace00 = go.Scatter(
+                x=x5,
+                y=y00,
+                name='Water low reference line',
+                text='Water low reference line',
+                hoverinfo='Water low reference line',
+                line=dict(color='rgb(0, 0, 255)', width=1, dash='dot')
+            )
+
+            trace5 = go.Scatter(
+                x=x5,
+                y=y5,
+                name="Container Water Percentage",
+                text="Container Water Percentage",
+                hoverinfo="Container Water Percentage",
+                line=dict(shape='spline', color='rgb(0,191,255)')
+            )
+
+
         if result2 is not None and len(result2) > 0:
-            data = [trace0, trace1, trace2, trace3, trace4]
+            data = [trace0, trace00, trace1, trace2, trace3, trace4, trace5]
         else:
-            data = [trace0, trace1, trace3, trace4]
+            data = [trace0, trace00, trace1, trace3, trace4, trace5]
 
         layout = dict(
             legend=dict(
