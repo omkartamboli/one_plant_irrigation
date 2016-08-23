@@ -24,13 +24,13 @@ WaterPumpPin = 22
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by proximity sensor for triggering the sensor
 # ---------------------------------------------------------------------------------------------------------------------
-ProximityTriggerPin = 11
+ProximityTriggerPin = 21
 
 
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by proximity sensor for detecting water level in container
 # ---------------------------------------------------------------------------------------------------------------------
-ProximityEchoPin = 13
+ProximityEchoPin = 26
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -60,7 +60,7 @@ EnableSMSNotifications = False
 # ---------------------------------------------------------------------------------------------------------------------
 # Empty water container depth in cms, this will be used to detect actual water level
 # ---------------------------------------------------------------------------------------------------------------------
-ContainerDepth = 30
+ContainerDepth = 18.00
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ data_no_of_hours = 1
 # ---------------------------------------------------------------------------------------------------------------------
 # Time to keep pump on in seconds
 # ---------------------------------------------------------------------------------------------------------------------
-timeToKeppPumpOnInSeconds = 1.75
+timeToKeppPumpOnInSeconds = 6
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -137,6 +137,18 @@ def setup_gpio():
     # Set water pump pin as output
     GPIO.setup(WaterPumpPin, GPIO.OUT)
 
+    setupGPIOForProximitySensor()
+
+    # Set DhtDataPin as input
+    GPIO.setup(DhtDataPin, GPIO.IN)
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Util method to setup GPIO for Proximity Sensor
+# ---------------------------------------------------------------------------------------------------------------------
+
+def setupGPIOForProximitySensor():
+    GPIO.setmode(GPIO.BCM)
+
     # Set Proximity sensor trigger pin as output
     GPIO.setup(ProximityTriggerPin, GPIO.OUT)
 
@@ -145,9 +157,6 @@ def setup_gpio():
 
     # Set ProximityTriggerPin to false before we start the experiment
     GPIO.output(ProximityTriggerPin, False)
-
-    # Set DhtDataPin as input
-    GPIO.setup(DhtDataPin, GPIO.IN)
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Util method to setup GPIO for Stepper Motor

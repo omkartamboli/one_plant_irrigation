@@ -15,19 +15,11 @@ WaterSafetyLevel = 2
 # Function to get the distance of the water level from sensor
 # ---------------------------------------------------------------------------------------------------------------------
 
-def getDistance(ProximityEchoPin):
+def getDistance():
 
-    start_time = time.time()
-    breakPulseForStart = start_time + 2.01
-    distance = None
-
+    sendTrigger()
     while GPIO.input(ProximityEchoPin) == 0:
         pulse_start = time.time()
-        if pulse_start > breakPulseForStart:
-            break
-
-    if pulse_start - start_time > 2:
-        distance = 1000
 
     else:
         while GPIO.input(ProximityEchoPin) == 1:
@@ -37,14 +29,14 @@ def getDistance(ProximityEchoPin):
         distance = pulse_duration * 17150
         distance = round(distance, 2)
 
-    print ('Distance: ' + str(distance) + ' cm')
+    print ('Distance: ' + str(distance) + ' cms')
     return distance
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Function to send trigger to sensor
 # ---------------------------------------------------------------------------------------------------------------------
 
-def sendTrigger(ProximityTriggerPin):
+def sendTrigger():
     GPIO.output(ProximityTriggerPin, True)
     time.sleep(0.00001)
     GPIO.output(ProximityTriggerPin, False)
@@ -55,8 +47,7 @@ def sendTrigger(ProximityTriggerPin):
 # ---------------------------------------------------------------------------------------------------------------------
 
 def getWaterLevel():
-    sendTrigger(ProximityTriggerPin)
-    water_level_distance = getDistance(ProximityEchoPin)
+    water_level_distance = getDistance()
 
     if water_level_distance < ContainerDepth:
         return ContainerDepth - water_level_distance

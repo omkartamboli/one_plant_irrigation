@@ -1,6 +1,6 @@
 from GPIOConfig import *
 import sys
-
+import datetime
 
 def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
     GPIO.output(WaterPumpPin, True)
@@ -16,7 +16,7 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(WaterPumpPin, GPIO.OUT)
 
-        #turnOnWaterPumpForNSeconds(secondsInFloat)
+        turnOnWaterPumpForNSeconds(secondsInFloat,datetime.datetime.now())
 
     except KeyboardInterrupt:
         print "Program terminated on user interrupt."

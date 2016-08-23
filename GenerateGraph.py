@@ -54,15 +54,13 @@ def plot_graph(isOnline):
             x2 = [None] * len(result2)
             y2 = [None] * len(result2)
             z2 = [None] * len(result2)
-            colorarray = [None] * len(result2)
-            opacityArray = [None] * len(result2)
 
             for row2 in result2:
                 x2[j] = row2[0]
                 y2[j] = Moisture_Low_Value + 10
-                z2[j] = float(row2[1]*4)
-                colorarray[j] = 'rgb(0, 0, 255)'
-                opacityArray[j] = 0.5
+                z2[j] = float(row2[1])*5
+                j += 1
+
 
             trace2 = go.Scatter(
                 x=x2,
@@ -72,8 +70,7 @@ def plot_graph(isOnline):
                 hoverinfo='Water Release Events',
                 mode='markers',
                 marker=dict(
-                    color=colorarray,
-                    opacity=opacityArray,
+                    color='rgb(0, 0, 255)',
                     size=z2
                 )
             )
@@ -86,7 +83,6 @@ def plot_graph(isOnline):
             for row3 in result3:
                 x3[k] = row3[0]
                 y3[k] = float(row3[1])
-
                 k += 1
 
             trace3 = go.Scatter(
@@ -106,7 +102,6 @@ def plot_graph(isOnline):
             for row4 in result4:
                 x4[l] = row4[0]
                 y4[l] = float(row4[1])
-
                 l += 1
 
             trace4 = go.Scatter(
