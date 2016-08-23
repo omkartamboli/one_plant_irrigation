@@ -34,6 +34,9 @@ def callback():
     # Record temperature and humidity
     recordTemperatureAndHumidity(eventTime)
 
+    # Record water level event and check if there is enough water to open tap if required
+    enoughWater = isEnoughWaterToOpenTap(eventTime)
+
     if (0 - Moisture_Offset_Value) < avg_analog_value < (1023 - Moisture_Offset_Value):
         createEvent(CheckMoistureLevelEvent, avg_analog_value, digital_value, eventTime)
 
@@ -48,46 +51,30 @@ def callback():
 
     if digital_value:
 
-        print "LED off"
+        if enoughWater:
 
-        # Send email about watering plant
-        if shouldSendEmail(MoistureLevelLowStatus):
-            send_email(message_opening_tap)
+            # Send email about watering plant
+            if shouldSendEmail(MoistureLevelLowStatus):
+                send_email(message_opening_tap)
 
-        # Send sms about watering plant
-        if shouldSendSMS(MoistureLevelLowStatus):
-            sendOpeningTapSMS()
+            # Send sms about watering plant
+            if shouldSendSMS(MoistureLevelLowStatus):
+                sendOpeningTapSMS()
 
-        # Open tap for configured time second
-        turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds,eventTime)
+            # Open tap for configured time second
+            turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds, eventTime)
 
+        else:
 
-        # if isEnoughWaterToOpenTap():
-        #
-        #     # Send email about watering plant
-        #     if shouldSendEmail(MoistureLevelLowStatus):
-        #         send_email(message_opening_tap)
-        #
-        #     # Send sms about watering plant
-        #     if shouldSendSMS(MoistureLevelLowStatus):
-        #         sendOpeningTapSMS()
-        #
-        #     # Open tap for configured time second
-        #     turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds)
-        #
-        # else:
-        #
-        #     # Send email if moisture level is not restored
-        #     if shouldSendEmail(MoistureLevelLowAndWaterLevelLowStatus):
-        #         send_email(message_dead)
-        #
-        #     # Send sms if moisture level is not restored
-        #     if shouldSendSMS(MoistureLevelLowAndWaterLevelLowStatus):
-        #         sendDeadSMS()
+            # Send email if moisture level is not restored
+            if shouldSendEmail(MoistureLevelLowAndWaterLevelLowStatus):
+                send_email(message_dead)
+
+            # Send sms if moisture level is not restored
+            if shouldSendSMS(MoistureLevelLowAndWaterLevelLowStatus):
+                sendDeadSMS()
 
     else:
-
-        print "LED on"
 
         # Send email if moisture level is ok and no watering is required
         if shouldSendEmail(MoistureLevelOKStatus):

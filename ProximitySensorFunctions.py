@@ -8,7 +8,7 @@ from EventNames import *
 # Water safety level is set to 2 cms, if container has less than 2 cms of water then tap will not open
 # ---------------------------------------------------------------------------------------------------------------------
 
-WaterSafetyLevel = 2
+WaterSafetyLevel = 3
 
 
 # ---------------------------------------------------------------------------------------------------------------------
