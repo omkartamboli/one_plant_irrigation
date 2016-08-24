@@ -30,7 +30,7 @@ phones = ["iphone", "android", "blackberry"]
 
 
 @app.route("/")
-def moistureStatus():
+def rootpath():
     result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
@@ -40,7 +40,7 @@ def moistureStatus():
 
 
 @app.route("/dashboard")
-def moistureStatus():
+def dashboard():
     result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
@@ -65,14 +65,28 @@ def login():
             login_user(user, remember=True)
             return redirect("/appConfig")
         else:
-            render_template("login.html", form=form, message_flashed="Invalid Login!!!", message="Invalid Login!!!")
+            render_template("login.html", form=form, message="Invalid Login!!!")
 
     return render_template("login.html", form=form)
+
+
 
 @app.route("/appConfig", methods=['GET'])
 @login_required
 def appConfig():
     return render_template('appConfig.html', message="Valid API Key")
+
+
+@app.route("/logout", methods=["GET"])
+@login_required
+def logout():
+    """Logout the current user."""
+    user = current_user
+    user.authenticated = False
+    db.session.add(user)
+    db.session.commit()
+    logout_user()
+    return redirect("/")
 
 
 
