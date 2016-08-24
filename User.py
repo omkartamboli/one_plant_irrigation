@@ -1,8 +1,7 @@
-from flask.ext.sqlalchemy import SQLAlchemy
-from GPIOConfig import dbSchema,dbHost,dbPass,dbUser
+from flask_sqlalchemy import SQLAlchemy
+from GPIOConfig import dbSchema,dbHost,dbPass,dbUser,dbPort
 
 db = SQLAlchemy()
-db.create_engine('mysql://{0}:{1}@{2}/{3}'.format(dbUser,dbPass,dbHost,dbSchema))
 
 #...
 
@@ -26,8 +25,8 @@ class User(db.Model):
         return self.active
 
     def get_id(self):
-        """Return the email address to satisfy Flask-Login's requirements."""
-        return self.email
+        """Return the username to satisfy Flask-Login's requirements."""
+        return self.username
 
     def is_authenticated(self):
         """Return True if the user is authenticated."""

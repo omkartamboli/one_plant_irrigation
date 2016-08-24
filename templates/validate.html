@@ -1,29 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Python - One Plant Irrigation App</title>
-    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-    <link href="/style.css" rel="stylesheet">
-    <!--<link href="/js/jquery-3.1.0.js" rel="script">-->
-    <!--<link href="/js/validate.js" rel="script">-->
-</head>
-
-<body>
-    <div class="container" style="!important;max-width: 1050px">
-        <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation"><a href="/moistureStatus">Home</a>
-                    </li>
-                    <li role="presentation" class="active"><a href="#">App Config</a>
-                    </li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Python Flask - One Plant Irrigation App</h3>
-        </div>
-
+{% extends "base.html" %}
+{% block content %}
         {% if message %}
             <div class="jumbotron">
                 <h3> <span style="color: red; background-color: white; width: 100%; height: 100%; vertical-align: middle;"> {{message}} </span></h3>
@@ -39,12 +15,4 @@
                 <button id="btnValidate" class="btn btn-lg btn-primary btn-block" type="submit">Validate</button>
             </form>
         </div>
-
-        <footer class="footer">
-            <p>&copy;2016</p>
-        </footer>
-
-    </div>
-</body>
-
-</html>
+{% endblock %}'

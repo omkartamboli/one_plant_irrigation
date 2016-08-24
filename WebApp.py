@@ -3,40 +3,76 @@ from dbFunctions import getEventLogOfLastNHours,getConfigValue
 from GPIOConfig import data_no_of_hours,graph_no_of_hours
 from WebAppConfig import *
 from EventNames import CheckMoistureLevelEvent
-from flask.ext.login import LoginManager,login_required,set_login_view
+from flask_login import LoginManager, login_required, login_user, logout_user, current_user,set_login_view
 from User import *
+from Forms import LoginForm
+from flask_bcrypt import Bcrypt
 
 
 app = Flask(__name__, static_url_path='')
 login_manager = LoginManager()
-
 login_manager.init_app(app)
-set_login_view("login")
 
+bcrypt = Bcrypt(app)
+app.secret_key=appSecretKey
+with app.app_context():
+    set_login_view("login")
+
+dburi = 'mysql+mysqldb://{0}:{1}@{2}:{3}/{4}'.format(dbUser, dbPass, dbHost, dbPort, dbSchema)
+print dburi
+
+app.config.__setitem__('SQLALCHEMY_DATABASE_URI',dburi)
+app.config.__setitem__('SQLALCHEMY_TRACK_MODIFICATIONS',True)
+db.init_app(app)
 
 phones = ["iphone", "android", "blackberry"]
 
-@app.route("/moistureStatus")
+
+
+@app.route("/")
 def moistureStatus():
     result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('index.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data, isMobileRequest=isMobileRequest(request))
+    return render_template('dashboard.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data, isMobileRequest=isMobileRequest(request))
+
+
+
+@app.route("/dashboard")
+def moistureStatus():
+    result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
+    data = [dict(eventTime=row[0],
+                 eventAnalogValue=row[1]) for row in result]
+
+    return render_template('dashboard.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data, isMobileRequest=isMobileRequest(request))
 
 
 
 
 @app.route("/login", methods=['GET','POST'])
 def login():
-    return
+    """For GET requests, display the login form. For POSTS, login the current user
+    by processing the form."""
+    print db
+    form = LoginForm(csrf_enabled=True)
+    if form.validate_on_submit():
+        user = User.query.get(form.username.data)
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            user.authenticated = True
+            db.session.add(user)
+            db.session.commit()
+            login_user(user, remember=True)
+            return redirect("/appConfig")
+        else:
+            render_template("login.html", form=form, message_flashed="Invalid Login!!!", message="Invalid Login!!!")
+
+    return render_template("login.html", form=form)
 
 @app.route("/appConfig", methods=['GET'])
 @login_required
 def appConfig():
     return render_template('appConfig.html', message="Valid API Key")
-
-
 
 
 
@@ -54,32 +90,9 @@ def user_loader(user_id):
     return User.query.get(user_id)
 
 
-@app.route("/validate", methods=['GET'])
-def validate_get():
-    return render_template('validate.html')
-
-
-@app.route("/validate", methods=['POST'])
-def validate_post():
-    _apiKey = request.form['apiKey']
-
-    if _apiKey is None:
-        print "form api key is null"
-        return render_template('validate.html', message="Invalid API Key")
-
-    apiKeyConfig = getConfigValue("viewConfigApiKey")
-
-    if apiKeyConfig is None:
-        print "db api key is null"
-        return render_template('validate.html', message="Invalid API Key")
-
-    # validate the received values
-    if _apiKey == apiKeyConfig:
-        return render_template('appConfig.html', message="Valid API Key")
-    else:
-        return render_template('validate.html', message="Invalid API Key")
-
-
 if __name__ == "__main__":
     context = (ssl_certfile_location, ssl_keyfile_location)
     app.run(host=server_host, port=server_port, ssl_context=context, debug=True, threaded=True)
+    print db
+
+

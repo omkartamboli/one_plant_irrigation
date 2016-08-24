@@ -5,14 +5,10 @@ import MySQLdb
 import traceback
 import logging
 import time
-from sqlalchemy import create_engine
-
-engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(dbUser,dbPass,dbHost,dbSchema))
 
 def getDBConnection():
     try:
-        #return MySQLdb.connect(dbHost, dbUser, dbPass, dbSchema)
-        return engine.connect()
+        return MySQLdb.connect(dbHost, dbUser, dbPass, dbSchema)
 
     except Exception as e:
         print "Failed to connect to database"
@@ -296,3 +292,37 @@ def getConfigValue(propertyName):
         if dbConnection is not None:
             closeDBConnection(dbConnection)
 
+
+def createUser(username, hashedPassword):
+    if username is None or hashedPassword is None:
+        print "No enough data to create user"
+    else:
+        dbConnection = None
+
+        sql = "INSERT INTO UserRecords(username, password) VALUES (%s, %s)"
+
+        try:
+            dbConnection = getDBConnection()
+            try:
+                # Execute the SQL command
+                dbConnection.cursor().execute(sql, (username,hashedPassword))
+                # Commit your changes in the database
+                dbConnection.commit()
+
+            except Exception as e:
+                print "Failed to create user."
+                logging.error(traceback.format_exc())
+                print e.__doc__
+                print e.message
+                # Rollback in case there is any error
+                dbConnection.rollback()
+
+        except Exception as e:
+            print "Failed to create user."
+            logging.error(traceback.format_exc())
+            print e.__doc__
+            print e.message
+
+        finally:
+            if dbConnection is not None:
+                closeDBConnection(dbConnection)

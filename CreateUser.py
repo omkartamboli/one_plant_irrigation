@@ -2,25 +2,21 @@
 """Create a new admin user able to view the /reports endpoint."""
 from getpass import getpass
 import sys
-from flask.ext.bcrypt import Bcrypt
-from WebApp import db, app
-import User
+from flask_bcrypt import Bcrypt
+from WebApp import app
 
+from dbFunctions import createUser
 
+bcrypt = Bcrypt(app)
 
 
 def main():
-    """Main entry point for script."""
-    with app.app_context():
-        print 'Enter email address: ',
-        email = raw_input()
-        password = getpass()
-        assert password == getpass('Password (again):')
-
-        user = User(email=email, password=Bcrypt.generate_password_hash(password))
-        db.session.add(user)
-        db.session.commit()
-        print 'User added.'
+    print 'Enter username:',
+    username = raw_input()
+    password = getpass()
+    assert password == getpass('Password (again):')
+    createUser(username, bcrypt.generate_password_hash(password))
+    print 'User added.'
 
 if __name__ == '__main__':
     sys.exit(main())

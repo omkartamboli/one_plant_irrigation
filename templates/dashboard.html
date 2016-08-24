@@ -1,31 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <title>Python - One Plant Irrigation App</title>
-
-
-    <link href="https://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <link href="https://getbootstrap.com/examples/jumbotron-narrow/jumbotron-narrow.css" rel="stylesheet">
-
-
-</head>
-
-<body>
-    <div class="container" style="!important;max-width: 1050px">
-        <div class="header">
-            <nav>
-                <ul class="nav nav-pills pull-right">
-                    <li role="presentation" class="active"><a href="#">Home</a>
-                    </li>
-                    <li role="presentation"><a href="/validate">App Config</a>
-                    </li>
-                </ul>
-            </nav>
-            <h3 class="text-muted">Python Flask - One Plant Irrigation App</h3>
-        </div>
-
+{% extends "base.html" %}
+{% block content %}
         <div class="jumbotron">
             <h2>Online - Moisture Graph Last {{graph_no_of_hours}} Hr(s)</h2>
             <p class="lead"></p>
@@ -35,9 +9,6 @@
             {% else %}
                 <iframe style="width: 100%; height: 800px;" frameborder="0" scrolling="no" src="https://plot.ly/~omkarjava0103/4.embed"></iframe>
             {% endif %}
-
-
-
         </div>
 
         <div class="jumbotron">
@@ -61,19 +32,11 @@
             </table>
         </div>
 
-        <div class="jumbotron">
-            <h2>Local - Moisture Graph Last {{graph_no_of_hours}} Hr(s)</h2>
-            <p class="lead"></p>
-            <img src="/graph.png" style="width: 100%; height: 100%;"/>
-            <!--<p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a>-->
-            <!--</p>-->
-        </div>
-
-        <footer class="footer">
-            <p>&copy;2016</p>
-        </footer>
-
-    </div>
-</body>
-
-</html>
+        <!--<div class="jumbotron">-->
+            <!--<h2>Local - Moisture Graph Last {{graph_no_of_hours}} Hr(s)</h2>-->
+            <!--<p class="lead"></p>-->
+            <!--<img src="/graph.png" style="width: 100%; height: 100%;"/>-->
+            <!--&lt;!&ndash;<p><a class="btn btn-lg btn-success" href="showSignUp" role="button">Sign up today</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</p>&ndash;&gt;-->
+        <!--</div>-->
+{% endblock %}'
