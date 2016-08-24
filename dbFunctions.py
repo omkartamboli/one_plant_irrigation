@@ -5,11 +5,14 @@ import MySQLdb
 import traceback
 import logging
 import time
+from sqlalchemy import create_engine
 
+engine = create_engine('mysql://{0}:{1}@{2}/{3}'.format(dbUser,dbPass,dbHost,dbSchema))
 
 def getDBConnection():
     try:
-        return MySQLdb.connect(dbHost, dbUser, dbPass, dbSchema)
+        #return MySQLdb.connect(dbHost, dbUser, dbPass, dbSchema)
+        return engine.connect()
 
     except Exception as e:
         print "Failed to connect to database"
@@ -292,3 +295,4 @@ def getConfigValue(propertyName):
     finally:
         if dbConnection is not None:
             closeDBConnection(dbConnection)
+

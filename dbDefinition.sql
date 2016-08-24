@@ -22,3 +22,13 @@ CREATE TABLE `opi`.`AppConfig` (
   `modificationTime` DATETIME,
   PRIMARY KEY (`property`))
 COMMENT = 'Table to store AppConfig';
+
+CREATE TABLE `opi`.`UserRecords` (
+  `username` VARCHAR(128) NOT NULL,
+  `password` VARCHAR(2048),
+  `active` BOOL DEFAULT TRUE,
+  `sessionId` VARCHAR(2048),
+  `authenticated` BOOL DEFAULT FALSE,
+  PRIMARY KEY (`username`))
+COMMENT = 'Table to store User records';
+

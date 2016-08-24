@@ -61,7 +61,7 @@ def plot_graph(isOnline):
             for row2 in result2:
                 x2[j] = row2[0]
                 y2[j] = Moisture_Low_Value + 10
-                z2[j] = float(row2[1])*5
+                z2[j] = float(row2[1])*3
                 j += 1
 
 
@@ -91,9 +91,9 @@ def plot_graph(isOnline):
             trace3 = go.Scatter(
                 x=x3,
                 y=y3,
-                name="Temperature",
-                text="Temperature",
-                hoverinfo="Temperature",
+                name="Temperature °C",
+                text="Temperature °C",
+                hoverinfo="Temperature °C",
                 line=dict(shape='spline', color='rgb(255,99,71)')
             )
 
@@ -110,9 +110,9 @@ def plot_graph(isOnline):
             trace4 = go.Scatter(
                 x=x4,
                 y=y4,
-                name="Humidity",
-                text="Humidity",
-                hoverinfo="Humidity",
+                name="Humidity %",
+                text="Humidity %",
+                hoverinfo="Humidity %",
                 line=dict(shape='spline', color='rgb(148, 0, 211)')
             )
 
@@ -141,9 +141,9 @@ def plot_graph(isOnline):
             trace5 = go.Scatter(
                 x=x5,
                 y=y5,
-                name="Container Water Percentage",
-                text="Container Water Percentage",
-                hoverinfo="Container Water Percentage",
+                name="Container Water %",
+                text="Container Water %",
+                hoverinfo="Container Water %",
                 line=dict(shape='spline', color='rgb(0,191,255)')
             )
 
