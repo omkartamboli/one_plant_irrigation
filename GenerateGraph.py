@@ -91,9 +91,9 @@ def plot_graph(isOnline):
             trace3 = go.Scatter(
                 x=x3,
                 y=y3,
-                name="Temperature °C",
-                text="Temperature °C",
-                hoverinfo="Temperature °C",
+                name="Temperature Celsius",
+                text="Temperature Celsius",
+                hoverinfo="Temperature Celsius",
                 line=dict(shape='spline', color='rgb(255,99,71)')
             )
 
