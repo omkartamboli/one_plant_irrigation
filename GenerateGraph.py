@@ -61,7 +61,7 @@ def plot_graph(isOnline):
             for row2 in result2:
                 x2[j] = row2[0]
                 y2[j] = Moisture_Low_Value + 10
-                z2[j] = float(row2[1])*3
+                z2[j] = float(row2[1])*1.5
                 j += 1
 
 

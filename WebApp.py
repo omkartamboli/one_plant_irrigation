@@ -1,6 +1,6 @@
 from flask import *
 from dbFunctions import getEventLogOfLastNHours,getConfigValue
-from GPIOConfig import data_no_of_hours,graph_no_of_hours
+from GPIOConfig import data_no_of_hours, graph_no_of_hours, project_description
 from WebAppConfig import *
 from EventNames import CheckMoistureLevelEvent
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user,set_login_view
@@ -30,12 +30,12 @@ phones = ["iphone", "android", "blackberry"]
 
 
 @app.route("/")
-def rootpath():
+def home():
     result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('dashboard.html',graph_no_of_hours=graph_no_of_hours,data_no_of_hours=data_no_of_hours,data=data, isMobileRequest=isMobileRequest(request))
+    return render_template('home.html',project_description=project_description, isMobileRequest=isMobileRequest(request))
 
 
 

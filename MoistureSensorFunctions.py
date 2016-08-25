@@ -62,7 +62,7 @@ def callback():
                 sendOpeningTapSMS()
 
             # Open tap for configured time second
-            turnOnWaterPumpForNSeconds(timeToKeppPumpOnInSeconds, eventTime)
+            turnOnWaterPumpForNSeconds(timeToKeepPumpOnInSecondsForFullWaterCapacity, eventTime)
 
         else:
 
