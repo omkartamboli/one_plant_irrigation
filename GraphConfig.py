@@ -1,2 +1,2 @@
-plotly_username=<your plotly username>
-plotly_api_key=<your plotly api key>
+plotly_username = 'omkarjava0103'
+plotly_api_key = 'lqpo308poy'

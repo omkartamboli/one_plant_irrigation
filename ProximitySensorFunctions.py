@@ -55,6 +55,7 @@ def getWaterLevel():
 def isEnoughWaterToOpenTap(eventTime):
     waterLevel = getWaterLevel()
     createEvent(CheckWaterLevelEvent, waterLevel, waterLevel >= WaterSafetyLevel, eventTime)
-    return waterLevel >= WaterSafetyLevel
+    water_percentage = (float(waterLevel)/float(ContainerDepth)) * 100.00
+    return waterLevel >= WaterSafetyLevel , water_percentage
 
 # ---------------------------------------------------------------------------------------------------------------------

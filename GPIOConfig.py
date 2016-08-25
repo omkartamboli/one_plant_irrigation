@@ -122,7 +122,9 @@ data_no_of_hours = 1
 # ---------------------------------------------------------------------------------------------------------------------
 # Time to keep pump on in seconds
 # ---------------------------------------------------------------------------------------------------------------------
-timeToKeppPumpOnInSeconds = 8
+timeToKeepPumpOnInSecondsForFullWaterCapacity = 4
+
+
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -130,6 +132,59 @@ timeToKeppPumpOnInSeconds = 8
 # ---------------------------------------------------------------------------------------------------------------------
 maxTimeToKeepPumpOnInSeconds = float(5.0)
 
+
+project_description="""
+<p>
+<br/>
+
+This is automated irrigation system for one plant.
+
+<br/>
+</p>
+<p>
+<br/>
+
+The aim of the project is to water the plant on need basis, not based on schedule.
+Soil moisture sensors record the soil moisture regularly and note the readings.
+Pi performs the analysis of the moisture data and triggers the water motor when moisture level goes down certain value.
+DHT11 sensor records the current temperature and relative humidity.
+Proximity sensor is placed on top of water container, which monitors the water level in container.
+
+<br/>
+</p>
+<p>
+<br/>
+
+Plotly graphs are integrated to show trends of moisture, humidity, temperature, and current water level in the container.
+It also displays the moisture low reference line, water level critical line and water release events.
+
+<br/>
+</p>
+<p>
+<br/>
+
+Twilio APIs are integrated to send SMS notifications when moisture level falls below critical value, water container
+has less water, and when moisture is restored back. Also standard email APIs are integrated to send emails
+for these events.
+
+<br/>
+</p>
+<p>
+<br/>
+
+The Project is built using Raspberry Pi, soil moisture sensors, humidity and temperature sensor (DHT11),
+Proximity sensor (HC-SR04), and other supporting elements.
+
+<br/>
+</p>
+<p>
+<br/>
+
+For more information reach me at omkarjava0103@gmail.com
+
+<br/>
+</p>
+"""
 
 # ---------------------------------------------------------------------------------------------------------------------
 # PLEASE NOTE:
