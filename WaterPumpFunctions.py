@@ -7,6 +7,9 @@ def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
     GPIO.output(WaterPumpPin, True)
     time.sleep(secondsInFloat)
     GPIO.output(WaterPumpPin, False)
+
+    print "turnOnWaterPumpForNSeconds-> Pump was on for {0} seconds, at {1}".format(secondsInFloat,eventTime)
+
     if(eventTime is not None):
         createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
 
@@ -40,14 +43,23 @@ def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
     if eventTime is None:
         eventTime = datetime.datetime.now()
 
+    setupGPIOForProximitySensor()
+
     enoughWater, water_percentage = isEnoughWaterToOpenTap(eventTime)
 
     if enoughWater:
+
+        # Setup GPIO for experiment
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(WaterPumpPin, GPIO.OUT)
+
         if overrideSeconds is None:
             timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.1)
             turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
+            print "Plant watered for {0} seconds".format(timeToKeepPumpOn)
         else:
             turnOnWaterPumpForNSeconds(overrideSeconds, eventTime)
+            print "Plant watered for {0} seconds".format(overrideSeconds)
 
     return enoughWater
 

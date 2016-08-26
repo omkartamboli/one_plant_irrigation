@@ -219,6 +219,41 @@ def getEventLogOfLastNHours(noOfHours, eventName):
             closeDBConnection(dbConnection)
 
 
+def getLatestEventsData():
+    dbConnection = None
+
+    sql= "select max(eventTime), eventAnalogValue, eventType from EventLog group by eventType"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql)
+
+            if cursor.rowcount > 0:
+                return cursor.fetchall()
+            else:
+                return None
+
+        except Exception as e:
+            print "Failed to fetch latest event log information"
+            logging.error(traceback.format_exc())
+            print e.__doc__
+            print e.message
+
+    except Exception as e:
+        print "Failed to fetch latest event log information"
+        logging.error(traceback.format_exc())
+        print e.__doc__
+        print e.message
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
+
+
 def getAvgAnalogValueOfLastNHours(noOfHours, eventName):
     dbConnection = None
 
