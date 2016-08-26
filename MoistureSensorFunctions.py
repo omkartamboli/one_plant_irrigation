@@ -35,7 +35,7 @@ def callback():
     recordTemperatureAndHumidity(eventTime)
 
     # Record water level event and check if there is enough water to open tap if required
-    enoughWater = isEnoughWaterToOpenTap(eventTime)
+    enoughWater, water_percentage = isEnoughWaterToOpenTap(eventTime)
 
     if (0 - Moisture_Offset_Value) < avg_analog_value < (1023 - Moisture_Offset_Value):
         createEvent(CheckMoistureLevelEvent, avg_analog_value, digital_value, eventTime)
@@ -61,8 +61,11 @@ def callback():
             if shouldSendSMS(MoistureLevelLowStatus):
                 sendOpeningTapSMS()
 
-            # Open tap for configured time second
-            turnOnWaterPumpForNSeconds(timeToKeepPumpOnInSecondsForFullWaterCapacity, eventTime)
+            # Open tap as per water container level.
+            # If container level goes down, then open tap for longer time as it takes more effort to raise water when
+            # container has less water
+            timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.1)
+            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
 
         else:
 

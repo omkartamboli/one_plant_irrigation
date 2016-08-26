@@ -1,12 +1,14 @@
 from GPIOConfig import *
 import sys
 import datetime
+from ProximitySensorFunctions import isEnoughWaterToOpenTap
 
 def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
     GPIO.output(WaterPumpPin, True)
     time.sleep(secondsInFloat)
     GPIO.output(WaterPumpPin, False)
-    createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
+    if(eventTime is not None):
+        createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
 
 
 def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
@@ -16,7 +18,7 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(WaterPumpPin, GPIO.OUT)
 
-        turnOnWaterPumpForNSeconds(secondsInFloat,datetime.datetime.now())
+        turnOnWaterPumpForNSeconds(secondsInFloat, None)
 
     except KeyboardInterrupt:
         print "Program terminated on user interrupt."
@@ -32,6 +34,23 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
 
     finally:
         cleanupGPIO()
+
+def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
+
+    if eventTime is None:
+        eventTime = datetime.datetime.now()
+
+    enoughWater, water_percentage = isEnoughWaterToOpenTap(eventTime)
+
+    if enoughWater:
+        if overrideSeconds is None:
+            timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.1)
+            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
+        else:
+            turnOnWaterPumpForNSeconds(overrideSeconds, eventTime)
+
+    return enoughWater
+
 
 # Standard boilerplate to call the main() function to begin the program.
 if __name__ == '__main__':

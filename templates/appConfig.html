@@ -1,6 +1,55 @@
 {% extends "base_template.html" %}
 {% block content %}
+        {% if message %}
+            <div class="jumbotron">
+                <h2>{{message}}</h2>
+            </div>
+        {% endif %}
+
         <div class="jumbotron">
-            <h2>{{message}}</h2>
+            <form class="form-updateGraph" method="POST" action="/updateGraph">
+                <button id="btnUpdateGraph" class="btn btn-lg btn-primary btn-block" type="submit">Update Graph</button>
+            </form>
         </div>
+
+        {% if data %}
+        <div class="jumbotron">
+            <p class="lead" style="text-align: left; padding: 20px">
+                <h2>Latest sensors data</h2>
+            </p>
+            <table style="position: relative;max-width: 900px;width: 100%; border: 1px dashed darkgray; background-color: white" >
+                <thead style="border: 1px dashed darkgray">
+                    <tr style="row-span: 2">
+                        <td width="50%"> <h3> Parameter </h3> </td>
+                        <td width="50%"> <h3> Value </h3> </td>
+                    </tr>
+                </thead>
+                <tbody style="border: 1px dashed darkgray">
+                    {% for row in data %}
+                        <tr>
+                            <td width="50%"> {{row.key}} </td>
+                            <td width="50%"> {{row.value}} </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div class="jumbotron">
+            <form class="form-updateData" method="POST" action="/updateData">
+                <button id="btnUpdateData" class="btn btn-lg btn-primary btn-block" type="submit">Update Data</button>
+            </form>
+        </div>
+
+        <div class="jumbotron">
+            <form class="form-turnOnTap" name="formTurnOnTap" id="formTurnOnTap" method="POST" action="/turnOnTap">
+                {{ formTurnOnTap.csrf_token }}
+                {{ formTurnOnTap.username.label }} {{ formTurnOnTap.username(size=4) }}
+                <br/>
+                <button id="btnTurnOnTap" class="btn btn-lg btn-primary btn-block" type="submit">Turn On Tap </button>
+            </form>
+        </div>
+
+
 {% endblock %}'

@@ -5,8 +5,11 @@ from WebAppConfig import *
 from EventNames import CheckMoistureLevelEvent
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user,set_login_view
 from User import *
-from Forms import LoginForm
+from Forms import LoginForm,TurnOnTapForm
 from flask_bcrypt import Bcrypt
+from GenerateGraph import plot_graph
+from WaterPumpFunctions import turnOnWaterForCorrectSeconds
+import datetime
 
 
 app = Flask(__name__, static_url_path='')
@@ -54,7 +57,6 @@ def dashboard():
 def login():
     """For GET requests, display the login form. For POSTS, login the current user
     by processing the form."""
-    print db
     form = LoginForm(csrf_enabled=True)
     if form.validate_on_submit():
         user = User.query.get(form.username.data)
@@ -71,10 +73,14 @@ def login():
 
 
 
+
+
+
+
 @app.route("/appConfig", methods=['GET'])
 @login_required
 def appConfig():
-    return render_template('appConfig.html', message="Valid API Key")
+    return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True))
 
 
 @app.route("/logout", methods=["GET"])
@@ -89,6 +95,40 @@ def logout():
     return redirect("/")
 
 
+@app.route("/updateGraph", methods=["POST"])
+@login_required
+def updateGraph():
+    plot_graph(True)
+    return redirect("/dashboard")
+
+
+@app.route("/updateData", methods=["POST"])
+@login_required
+def updateGraph():
+    #data = getData()
+    data = None
+    return render_template('appConfig.html', data=data)
+
+@app.route("/turnOnTap", methods=["POST"])
+@login_required
+def turnOnTap():
+    form = TurnOnTapForm()
+    message = None
+    if form.validate_on_submit():
+        seconds = form.secondsInFloat
+        try:
+            result = turnOnWaterForCorrectSeconds(datetime.datetime.now(), None if seconds is None else float(seconds))
+            if result:
+                message = "Plant Watered !!!"
+            else:
+                message = "No enough water in container to water plant !!!"
+        except:
+            message = "Invalid input, Only float values acceprted !!!"
+    else:
+        message = "Invalid operation !!!"
+
+    return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True), message=message)
+
 
 def isMobileRequest(request):
     agent = request.headers.get('User-Agent')
@@ -97,10 +137,6 @@ def isMobileRequest(request):
 
 @login_manager.user_loader
 def user_loader(user_id):
-    """Given *user_id*, return the associated User object.
-
-    :param unicode user_id: user_id (email) user to retrieve
-    """
     return User.query.get(user_id)
 
 
