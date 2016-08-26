@@ -14,23 +14,23 @@
 
         {% if data %}
         <div class="jumbotron">
-            <p class="lead" style="text-align: left; padding: 20px">
+            <p class="lead" style="text-align: left; padding-left: 20px">
                 <h2>Latest sensors data</h2>
             </p>
             <table style="position: relative;max-width: 900px;width: 100%; border: 1px dashed darkgray; background-color: white" >
                 <thead style="border: 1px dashed darkgray">
                     <tr style="row-span: 2">
-                        <td width="40%"> <h3> Event Time </h3> </td>
-                        <td width="40%"> <h3> Event Type </h3> </td>
-                        <td width="20%"> <h3> Event Value </h3> </td>
+                        <td width="40%" style="text-align: left;padding-left: 20px;"> <h3> Event Time </h3> </td>
+                        <td width="40%" style="text-align: left;padding-left: 20px;"> <h3> Event Type </h3> </td>
+                        <td width="20%" style="text-align: left;padding-left: 20px;"> <h3> Event Value </h3> </td>
                     </tr>
                 </thead>
                 <tbody style="border: 1px dashed darkgray">
                     {% for row in data %}
                         <tr>
-                            <td width="40%" style="text-align: left;padding: 20px;"> {{row[0]}} </td>
-                            <td width="40%" style="text-align: left;padding: 20px;"> {{row[2]}} </td>
-                            <td width="20%" style="text-align: left;padding: 20px;"> {{row[1]}} </td>
+                            <td width="40%" style="text-align: left;padding-left: 20px;"> {{row[0]}} </td>
+                            <td width="40%" style="text-align: left;padding-left: 20px;"> {{row[2]}} </td>
+                            <td width="20%" style="text-align: left;padding-left: 20px;"> {{row[1]}} </td>
                         </tr>
                     {% endfor %}
                 </tbody>

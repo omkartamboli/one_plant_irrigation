@@ -222,7 +222,7 @@ def getEventLogOfLastNHours(noOfHours, eventName):
 def getLatestEventsData():
     dbConnection = None
 
-    sql= "select max(eventTime), eventAnalogValue, eventType from EventLog group by eventType"
+    sql = "select el.eventTime, el.eventAnalogValue, el.eventType  from EventLog as el join (select max(Eventtime) as eventTime,eventType from EventLog  group by eventType order by eventTime desc) as t1 on el.eventTime=t1.eventTime and el.eventtype = t1.eventtype;"
 
     try:
         dbConnection = getDBConnection()
