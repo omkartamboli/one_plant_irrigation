@@ -2,6 +2,7 @@
 import smtplib
 from smtplib import SMTPException
 from EmailConfig import *
+import logging
 
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -16,9 +17,9 @@ def send_email(smtp_message):
         server.sendmail(smtp_sender, smtp_receivers, smtp_message)
         server.quit()
 
-        print "Successfully sent email"
+        logging.info("Successfully sent email")
 
     except SMTPException:
-        print "Error: unable to send email"
+        logging.error("Error: unable to send email")
 
 # ----------------------------------------------------------------------------------------------------------------------

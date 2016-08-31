@@ -12,12 +12,12 @@ import logging
 # Setup GPIO for experiment
 setup_gpio()
 
-# This line tells our script to keep an eye on our gpio pin and let us know when the pin goes HIGH or LOW
-GPIO.add_event_detect(MoisturePin, GPIO.BOTH, bouncetime=300)
-
-# This line assigns a function to the GPIO pin so that when the above line tells us there is a change on the pin,
-# run this function
-GPIO.add_event_callback(MoisturePin, callback)
+# # This line tells our script to keep an eye on our gpio pin and let us know when the pin goes HIGH or LOW
+# GPIO.add_event_detect(MoisturePin, GPIO.BOTH, bouncetime=300)
+#
+# # This line assigns a function to the GPIO pin so that when the above line tells us there is a change on the pin,
+# # run this function
+# GPIO.add_event_callback(MoisturePin, callback)
 
 
 try:
@@ -27,15 +27,15 @@ try:
         time.sleep(15)
 
 except KeyboardInterrupt:
-    print "Program terminated on user interrupt."
+    logging.error("Program terminated on user interrupt.")
 
 except Exception as e:
     logging.error(traceback.format_exc())
-    print e.__doc__
-    print e.message
+    logging.error(e.__doc__)
+    logging.error(e.message)
 
 except:
-    print "Unexpected error:", sys.exc_info()[0]
+    logging.error("Unexpected error:", sys.exc_info()[0])
     raise
 
 finally:

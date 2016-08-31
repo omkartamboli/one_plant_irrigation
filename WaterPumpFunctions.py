@@ -3,19 +3,19 @@ import sys
 import datetime
 from ProximitySensorFunctions import isEnoughWaterToOpenTap
 
+
 def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
     GPIO.output(WaterPumpPin, True)
     time.sleep(secondsInFloat)
     GPIO.output(WaterPumpPin, False)
 
-    print "turnOnWaterPumpForNSeconds-> Pump was on for {0} seconds, at {1}".format(secondsInFloat,eventTime)
+    logging.info("turnOnWaterPumpForNSeconds-> Pump was on for {0} seconds, at {1}".format(secondsInFloat, eventTime))
 
-    if(eventTime is not None):
+    if (eventTime is not None):
         createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
 
 
 def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
-
     try:
         # Setup GPIO for experiment
         GPIO.setmode(GPIO.BCM)
@@ -24,22 +24,22 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
         turnOnWaterPumpForNSeconds(secondsInFloat, None)
 
     except KeyboardInterrupt:
-        print "Program terminated on user interrupt."
+        logging.error("Program terminated on user interrupt.")
 
     except Exception as e:
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        logging.error("Unexpected error:", sys.exc_info()[0])
         raise
 
     finally:
         cleanupGPIO()
 
-def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
 
+def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
     if eventTime is None:
         eventTime = datetime.datetime.now()
 
@@ -54,12 +54,12 @@ def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
         GPIO.setup(WaterPumpPin, GPIO.OUT)
 
         if overrideSeconds is None:
-            timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.1)
+            timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.05)
             turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
-            print "Plant watered for {0} seconds".format(timeToKeepPumpOn)
+            logging.info("Plant watered for {0} seconds".format(timeToKeepPumpOn))
         else:
             turnOnWaterPumpForNSeconds(overrideSeconds, eventTime)
-            print "Plant watered for {0} seconds".format(overrideSeconds)
+            logging.info("Plant watered for {0} seconds".format(overrideSeconds))
 
     return enoughWater
 
@@ -77,13 +77,13 @@ if __name__ == '__main__':
         turnOnWaterPumpForNSecondsStandAloneMode(timeToKeepPumpOn)
 
     except KeyboardInterrupt:
-        print "Program terminated on user interrupt."
+        logging.error("Program terminated on user interrupt.")
 
     except Exception as e:
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        logging.error("Unexpected error:", sys.exc_info()[0])
         raise

@@ -20,14 +20,14 @@ def callback():
     for channel in Moisture_ADC_Channels:
         channel_analog_value = mcp.read_adc(channel) - Moisture_Offset_Value
         total_analog_value += channel_analog_value
-        print "Moisture Sensors : Channel {0} analog value : {1}".format(str(channel), str(channel_analog_value))
+        logging.info("Moisture Sensors : Channel {0} analog value : {1}".format(str(channel), str(channel_analog_value)))
         total_channels += 1
 
     avg_analog_value = float(total_analog_value) / float(total_channels)
     digital_value = avg_analog_value > Moisture_Low_Value
 
-    print "Moisture Sensors : Average analog value : {0} , Digital Value : {1}".format(str(avg_analog_value),
-                                                                                       str(digital_value))
+    logging.info("Moisture Sensors : Average analog value : {0} , Digital Value : {1}".format(str(avg_analog_value),
+                                                                                       str(digital_value)))
 
     eventTime = datetime.datetime.now()
 

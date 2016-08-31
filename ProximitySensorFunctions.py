@@ -22,7 +22,7 @@ def getDistance():
         distance = pulse_duration * 17150
         distance = round(distance, 2)
 
-    print ('Distance: ' + str(distance) + ' cms')
+    logging.info('Distance: ' + str(distance) + ' cms')
     return distance
 
 # ---------------------------------------------------------------------------------------------------------------------

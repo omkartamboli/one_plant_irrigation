@@ -5,16 +5,17 @@ import MySQLdb
 import traceback
 import logging
 import time
+from EventNames import *
 
 def getDBConnection():
     try:
         return MySQLdb.connect(dbHost, dbUser, dbPass, dbSchema)
 
     except Exception as e:
-        print "Failed to connect to database"
+        logging.error( "Failed to connect to database")
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
         raise e
 
 
@@ -24,18 +25,20 @@ def closeDBConnection(dbConnection):
             dbConnection.close()
 
     except Exception as e:
-        print "Failed to close database connection"
+        logging.error("Failed to close database connection")
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
         raise e
 
 
 def createEvent(eventType, eventAnalogValue, eventDigitalValue, eventTime):
     if eventType is None or (eventAnalogValue is None and eventDigitalValue is None):
-        print "No enough data to log event"
+        logging.warn("No enough data to log event")
     else:
         dbConnection = None
+
+        rationalisedAnalogValue = getRationalisedAnalogValue(eventType, eventAnalogValue)
 
         sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES (%s, %s, %s, %s)"
 
@@ -45,23 +48,23 @@ def createEvent(eventType, eventAnalogValue, eventDigitalValue, eventTime):
             try:
                 # Execute the SQL command
                 dbConnection.cursor().execute(sql, (
-                    eventTime.strftime('%Y-%m-%d %H:%M:%S'), eventType, eventAnalogValue, bool(eventDigitalValue)))
+                    eventTime.strftime('%Y-%m-%d %H:%M:%S'), eventType, rationalisedAnalogValue, bool(eventDigitalValue)))
                 # Commit your changes in the database
                 dbConnection.commit()
 
             except Exception as e:
-                print "Failed to create event."
+                logging.error("Failed to create event.")
                 logging.error(traceback.format_exc())
-                print e.__doc__
-                print e.message
+                logging.error(e.__doc__)
+                logging.error(e.message)
                 # Rollback in case there is any error
                 dbConnection.rollback()
 
         except Exception as e:
-            print "Failed to create event."
+            logging.error("Failed to create event.")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
         finally:
             if dbConnection is not None:
@@ -89,16 +92,16 @@ def getLatestEventEmailNotification():
                 return None
 
         except Exception as e:
-            print "Failed to fetch event notification information"
+            logging.error("Failed to fetch event notification information")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch event notification information"
+        logging.error("Failed to fetch event notification information")
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
@@ -126,16 +129,16 @@ def getLatestEventSMSNotification():
                 return None
 
         except Exception as e:
-            print "Failed to fetch event notification information"
+            logging.error("Failed to fetch event notification information")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch event notification information"
+        logging.error("Failed to fetch event notification information")
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
@@ -144,7 +147,7 @@ def getLatestEventSMSNotification():
 
 def createEventNotification(statusType, emailSent, smsSent):
     if statusType is None:
-        print "No enough data to log event notification"
+        logging.warn("No enough data to log event notification")
     else:
         dbConnection = None
 
@@ -166,18 +169,18 @@ def createEventNotification(statusType, emailSent, smsSent):
                 dbConnection.commit()
 
             except Exception as e:
-                print "Failed to create event notification."
+                logging.error("Failed to create event notification.")
                 logging.error(traceback.format_exc())
-                print e.__doc__
-                print e.message
+                logging.error(e.__doc__)
+                logging.error(e.message)
                 # Rollback in case there is any error
                 dbConnection.rollback()
 
         except Exception as e:
-            print "Failed to create event notification."
+            logging.error("Failed to create event notification.")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
         finally:
             if dbConnection is not None:
@@ -203,16 +206,16 @@ def getEventLogOfLastNHours(noOfHours, eventName):
                 return None
 
         except Exception as e:
-            print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+            logging.error("Failed to fetch event log information for last {0} hours".format(str(noOfHours)))
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+        logging.error("Failed to fetch event log information for last {0} hours".format(str(noOfHours)))
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
@@ -238,16 +241,16 @@ def getLatestEventsData():
                 return None
 
         except Exception as e:
-            print "Failed to fetch latest event log information"
+            logging.error("Failed to fetch latest event log information")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch latest event log information"
+        logging.error("Failed to fetch latest event log information")
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
@@ -273,20 +276,92 @@ def getAvgAnalogValueOfLastNHours(noOfHours, eventName):
                 return None
 
         except Exception as e:
-            print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+            logging.error("Failed to fetch event log information for last {0} hours".format(str(noOfHours)))
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch event log information for last {0} hours".format(str(noOfHours))
+        logging.error("Failed to fetch event log information for last {0} hours".format(str(noOfHours)))
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
             closeDBConnection(dbConnection)
+
+
+def getLatestAnalogValueForEvent(eventName):
+    dbConnection = None
+
+    sql = "SELECT eventAnalogValue FROM EventLog WHERE eventType = %s ORDER BY eventTime DESC LIMIT 1"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, (eventName))
+
+            if cursor.rowcount > 0:
+                return cursor.fetchone()[0]
+            else:
+                return None
+
+        except Exception as e:
+            logging.error("Failed to fetch Latest AnalogValue For {0}".format(str(eventName)))
+            logging.error(traceback.format_exc())
+            logging.error(e.__doc__)
+            logging.error(e.message)
+
+    except Exception as e:
+        logging.error("Failed to fetch Latest AnalogValue For {0}".format(str(eventName)))
+        logging.error(traceback.format_exc())
+        logging.error(e.__doc__)
+        logging.error(e.message)
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
+
+
+def getNumberOfXEventsInLastNMinutes(eventName, minutes):
+    dbConnection = None
+
+    sql = "SELECT count(*) FROM EventLog WHERE (eventTime > DATE_SUB(NOW(), INTERVAL %s MINUTE )) AND eventType = %s"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, (eventName, minutes))
+
+            if cursor.rowcount > 0:
+                return cursor.fetchone()[0]
+            else:
+                return None
+
+        except Exception as e:
+            logging.error("Failed to fetch Latest event counts For {0}".format(str(eventName)))
+            logging.error(traceback.format_exc())
+            logging.error(e.__doc__)
+            logging.error(e.message)
+
+    except Exception as e:
+        logging.error("Failed to fetch Latest event counts For {0}".format(str(eventName)))
+        logging.error(traceback.format_exc())
+        logging.error(e.__doc__)
+        logging.error(e.message)
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
+
+
 
 
 def getConfigValue(propertyName):
@@ -312,16 +387,16 @@ def getConfigValue(propertyName):
                 return None
 
         except Exception as e:
-            print "Failed to fetch config information for {0} property".format(str(propertyName))
+            logging.error("Failed to fetch config information for {0} property".format(str(propertyName)))
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
     except Exception as e:
-        print "Failed to fetch config information for {0} property".format(str(propertyName))
+        logging.error("Failed to fetch config information for {0} property".format(str(propertyName)))
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     finally:
         if dbConnection is not None:
@@ -330,7 +405,7 @@ def getConfigValue(propertyName):
 
 def createUser(username, hashedPassword):
     if username is None or hashedPassword is None:
-        print "No enough data to create user"
+        logging.warn("No enough data to create user")
     else:
         dbConnection = None
 
@@ -345,19 +420,38 @@ def createUser(username, hashedPassword):
                 dbConnection.commit()
 
             except Exception as e:
-                print "Failed to create user."
+                logging.error("Failed to create user.")
                 logging.error(traceback.format_exc())
-                print e.__doc__
-                print e.message
+                logging.error(e.__doc__)
+                logging.error(e.message)
                 # Rollback in case there is any error
                 dbConnection.rollback()
 
         except Exception as e:
-            print "Failed to create user."
+            logging.error("Failed to create user.")
             logging.error(traceback.format_exc())
-            print e.__doc__
-            print e.message
+            logging.error(e.__doc__)
+            logging.error(e.message)
 
         finally:
             if dbConnection is not None:
                 closeDBConnection(dbConnection)
+
+
+def getRationalisedAnalogValue(eventName, currentAnalogValue):
+
+    lastAnalogValue = float(getLatestAnalogValueForEvent(eventName))
+
+    if eventName in (CheckTemperatureEvent, CheckHumidityEvent):
+        deviation = 10
+
+    elif eventName in (CheckMoistureLevelEvent,CheckWaterLevelEvent):
+        deviation = 5 if getNumberOfXEventsInLastNMinutes(WaterPlantEvent,5) == 0 else 100
+
+    observed_deviation = (abs(float(currentAnalogValue) - lastAnalogValue) / lastAnalogValue ) * 100
+
+    if observed_deviation > deviation:
+        return lastAnalogValue
+    else:
+        return currentAnalogValue
+

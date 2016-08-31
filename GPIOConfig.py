@@ -111,7 +111,7 @@ mcp = Adafruit_MCP3008.MCP3008(clk=CLK, cs=CS, miso=MISO, mosi=MOSI)
 # ---------------------------------------------------------------------------------------------------------------------
 # configuration to generate graph for last how many number of hours
 # ---------------------------------------------------------------------------------------------------------------------
-graph_no_of_hours = 48
+graph_no_of_hours = 120
 
 # ---------------------------------------------------------------------------------------------------------------------
 # configuration to generate data for last how many number of hours
@@ -122,7 +122,7 @@ data_no_of_hours = 1
 # ---------------------------------------------------------------------------------------------------------------------
 # Time to keep pump on in seconds
 # ---------------------------------------------------------------------------------------------------------------------
-timeToKeepPumpOnInSecondsForFullWaterCapacity = 4
+timeToKeepPumpOnInSecondsForFullWaterCapacity = 1
 
 
 
@@ -236,7 +236,7 @@ def setupGPIOForStepperMotor(StepPins):
 
     # Set all stepper motor pins as output
     for pin in StepPins:
-        print "Setting up pin ", pin
+        logging.info("Setting up pin ", pin)
         GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, False)
 
@@ -246,7 +246,7 @@ def setupGPIOForStepperMotor(StepPins):
 # ---------------------------------------------------------------------------------------------------------------------
 
 def cleanupGPIO():
-    print "Cleaning up IO ..."
+    logging.info("Cleaning up IO ...")
     GPIO.cleanup()
 
 

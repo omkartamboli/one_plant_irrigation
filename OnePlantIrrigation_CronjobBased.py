@@ -23,19 +23,19 @@ def main():
         callback()
 
         if len(sys.argv) > 1 and bool(sys.argv[1]):
-            print "Plat graph flag: " + sys.argv[1]
+            logging.debug("Plat graph flag: " + sys.argv[1])
             plot_graph(False)
 
     except KeyboardInterrupt:
-        print "Program terminated on user interrupt."
+        logging.error("Program terminated on user interrupt.")
 
     except Exception as e:
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
+        logging.error(e.__doc__)
+        logging.error(e.message)
 
     except:
-        print "Unexpected error:", sys.exc_info()[0]
+        logging.error("Unexpected error:", sys.exc_info()[0])
         raise
 
     finally:

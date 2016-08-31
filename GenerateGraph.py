@@ -167,11 +167,11 @@ def plot_graph(isOnline):
         py.sign_in(plotly_username, plotly_api_key)
 
         if isOnline:
-            print "Plotting online graph"
+            logging.info("Plotting online graph")
             py.plot(fig, filename='OnePlantIrrigation')
 
         else:
-            print "Plotting offline graph"
+            logging.info("Plotting offline graph")
 
         py.image.save_as(fig, "./static/graph.png")
 
@@ -180,13 +180,13 @@ def plot_graph(isOnline):
 
     except Exception as e:
         logging.error(traceback.format_exc())
-        print e.__doc__
-        print e.message
-        print "Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours))
+        logging.error(e.__doc__)
+        logging.error(e.message)
+        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours)))
 
     except:
         logging.error(traceback.format_exc())
-        print "Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours))
+        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours)))
 
 
 if __name__ == "__main__":

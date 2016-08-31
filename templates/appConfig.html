@@ -7,13 +7,16 @@
         {% endif %}
 
         <div class="jumbotron">
-            <form class="form-updateGraph" method="POST" action="/updateGraph">
+            <form class="form-updateGraph" method="POST" action="/updateGraph" style="max-width: 400px; margin: auto; width: 60%;">
                 <button id="btnUpdateGraph" class="btn btn-lg btn-primary btn-block" type="submit">Update Graph</button>
             </form>
         </div>
 
-        {% if data %}
+
+
         <div class="jumbotron">
+
+            {% if data %}
             <p class="lead" style="text-align: left; padding-left: 20px">
                 <h2>Latest sensors data</h2>
             </p>
@@ -35,23 +38,29 @@
                     {% endfor %}
                 </tbody>
             </table>
-        </div>
-        {% endif %}
+            <br />
+            <br />
+            {% endif %}
 
-        <div class="jumbotron">
-            <form class="form-updateData" method="POST" action="/updateData">
+            <form class="form-updateData" method="POST" action="/updateData" style="max-width: 400px; margin: auto; width: 60%;">
                 <button id="btnUpdateData" class="btn btn-lg btn-primary btn-block" type="submit">Update Data</button>
             </form>
         </div>
 
         <div class="jumbotron">
-            <form class="form-turnOnTap" name="formTurnOnTap" id="formTurnOnTap" method="POST" action="/turnOnTap">
+            <form class="form-turnOnTap" name="formTurnOnTap" id="formTurnOnTap" method="POST" action="/turnOnTap" style="max-width: 400px; margin: auto; width: 60%;">
                 {{ formTurnOnTap.csrf_token }}
-                {{ formTurnOnTap.secondsInFloat.label }} {{ formTurnOnTap.secondsInFloat(size=4) }}
-                <br/>
+                <table width="100%">
+                    <tr>
+                        <td width="60%" style="text-align: left;padding-left: 20px; padding-bottom: 20px">
+                            {{ formTurnOnTap.secondsInFloat.label }}
+                        </td>
+                        <td width="40%" style="text-align: left;padding-right: 20px; padding-bottom: 20px">
+                            {{ formTurnOnTap.secondsInFloat(size=4, class_="form-control") }}
+                        </td>
+                    </tr>
+                </table>
                 <button id="btnTurnOnTap" class="btn btn-lg btn-primary btn-block" type="submit">Turn On Tap </button>
             </form>
         </div>
-
-
 {% endblock %}'

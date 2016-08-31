@@ -177,11 +177,11 @@ def rotateMotorAntiClockWise(speedForRotation, numberOfCycles):
 # ---------------------------------------------------------------------------------------------------------------------
 
 def openAndCloseTap(delayInSeconds):
-    print "Opening tap..."
+    logging.info("Opening tap...")
     rotateMotorAntiClockWise(get_speed_fast(), 2)
     time.sleep(delayInSeconds)
     rotateMotorClockWise(get_speed_fast(), 2)
-    print "Closing tap..."
+    logging.info("Closing tap...")
 
 
 # ---------------------------------------------------------------------------------------------------------------------

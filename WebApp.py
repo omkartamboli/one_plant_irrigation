@@ -10,6 +10,7 @@ from flask_bcrypt import Bcrypt
 from GenerateGraph import plot_graph
 from WaterPumpFunctions import turnOnWaterForCorrectSeconds
 import datetime
+import logging
 
 app = Flask(__name__, static_url_path='')
 login_manager = LoginManager()
@@ -137,5 +138,5 @@ def user_loader(user_id):
 
 if __name__ == "__main__":
     context = (ssl_certfile_location, ssl_keyfile_location)
-    print db
+    logging.info(db)
     app.run(host=server_host, port=server_port, ssl_context=context, debug=True, threaded=True)
