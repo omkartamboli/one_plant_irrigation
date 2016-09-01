@@ -14,13 +14,16 @@ class TurnOnTapForm(Form):
 
 
 class AppConfigForm(Form):
-    EnableEmailNotifications = RadioField('Enable Email', validators=[DataRequired()])
-    EnableSMSNotifications = RadioField('Enable SMS', validators=[DataRequired()])
+    EnableEmailNotifications = RadioField('Enable Email', validators=[DataRequired()],
+                                          choices=[('True', 'On'), ('False', 'Off')])
+    EnableSMSNotifications = RadioField('Enable SMS', validators=[DataRequired()],
+                                        choices=[('True', 'On'), ('False', 'Off')])
 
     graph_no_of_hours = IntegerField('Hours (Graph)', validators=[DataRequired()])
     data_no_of_hours = IntegerField('Hours (Data)', validators=[DataRequired()])
 
-    EnablePumpFunctions = RadioField('Enable Waterpump', validators=[DataRequired()])
+    EnablePumpFunctions = RadioField('Enable Waterpump', validators=[DataRequired()],
+                                     choices=[('True', 'On'), ('False', 'Off')])
     maxTimeToKeepPumpOnInSeconds = FloatField('Pump Max (Seconds)', validators=[DataRequired()])
     timeToKeepPumpOnInSecondsForFullWaterCapacity = FloatField('Pump Full Capacity (Seconds)',
                                                                validators=[DataRequired()])

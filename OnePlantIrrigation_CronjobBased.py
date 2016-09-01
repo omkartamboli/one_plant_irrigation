@@ -19,6 +19,9 @@ def main():
         # Setup GPIO for experiment
         setup_gpio()
 
+        # Load configuration from DB
+        loadConfigFromDb()
+
         # Just call callback function which checks sensor, and does required actions.
         callback()
 

@@ -7,31 +7,27 @@ import RPi.GPIO as GPIO
 import Adafruit_MCP3008
 from dbFunctions import *
 from EventNames import *
-
+import datetime
 
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pins used for stepper motor in the sequence IN1, IN2, IN3, IN4
 # ---------------------------------------------------------------------------------------------------------------------
 StepPins = [22, 23, 24, 25]
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by water pump
 # ---------------------------------------------------------------------------------------------------------------------
 WaterPumpPin = 22
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by proximity sensor for triggering the sensor
 # ---------------------------------------------------------------------------------------------------------------------
 ProximityTriggerPin = 21
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by proximity sensor for detecting water level in container
 # ---------------------------------------------------------------------------------------------------------------------
 ProximityEchoPin = 26
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # GPIO pin used by DHT11 sensor for detecting temperature and humidity
@@ -44,24 +40,25 @@ DhtDataPin = 12
 
 DHT_Sensor_Type = 11
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Configuration to enable / disable email notifications
 # ---------------------------------------------------------------------------------------------------------------------
 EnableEmailNotifications = True
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Configuration to enable / disable sms notifications
 # ---------------------------------------------------------------------------------------------------------------------
 EnableSMSNotifications = False
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Configuration to enable / disable water pump functions
+# ---------------------------------------------------------------------------------------------------------------------
+EnablePumpFunctions = True
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Empty water container depth in cms, this will be used to detect actual water level
 # ---------------------------------------------------------------------------------------------------------------------
 ContainerDepth = float(18.00)
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Water safety level is set to 2 cms, if container has less than 2 cms of water then tap will not open
@@ -69,19 +66,15 @@ ContainerDepth = float(18.00)
 
 WaterSafetyLevel = float(3.00)
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Analog input channels for moisture sensors
 # ---------------------------------------------------------------------------------------------------------------------
-Moisture_ADC_Channels = [0,1]
-
+Moisture_ADC_Channels = [0, 1]
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Moisture off set value for graphs
 # ---------------------------------------------------------------------------------------------------------------------
 Moisture_Offset_Value = float(100.00)
-
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Critical value for moisture
@@ -91,11 +84,7 @@ Moisture_Low_Value = (float(200.00) - Moisture_Offset_Value)
 # ---------------------------------------------------------------------------------------------------------------------
 # Critical value for water in container
 # ---------------------------------------------------------------------------------------------------------------------
-Water_Low_Value_Percentage = (WaterSafetyLevel/ContainerDepth) * 100
-
-
-
-
+Water_Low_Value_Percentage = (WaterSafetyLevel / ContainerDepth) * 100
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Software SPI configuration:
@@ -118,22 +107,17 @@ graph_no_of_hours = 120
 # ---------------------------------------------------------------------------------------------------------------------
 data_no_of_hours = 1
 
-
 # ---------------------------------------------------------------------------------------------------------------------
 # Time to keep pump on in seconds
 # ---------------------------------------------------------------------------------------------------------------------
 timeToKeepPumpOnInSecondsForFullWaterCapacity = 1
-
-
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Web App Max Time to keep pump on in seconds
 # ---------------------------------------------------------------------------------------------------------------------
 maxTimeToKeepPumpOnInSeconds = float(5.0)
 
-
-project_description="""
+project_description = """
 <p>
 <br/>
 
@@ -186,18 +170,18 @@ For more information reach me at omkarjava0103@gmail.com
 </p>
 """
 
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # PLEASE NOTE:
 # Don't change code beyond this line, following part contains util methods used by other files
 # ---------------------------------------------------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Util method to setup GPIO for experiment
 # ---------------------------------------------------------------------------------------------------------------------
 
 def setup_gpio():
-
     GPIO.setmode(GPIO.BCM)
     # setupGPIOForStepperMotor(StepPins) -- Not using stepper motor now
 
@@ -208,6 +192,7 @@ def setup_gpio():
 
     # Set DhtDataPin as input
     GPIO.setup(DhtDataPin, GPIO.IN)
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Util method to setup GPIO for Proximity Sensor
@@ -224,6 +209,7 @@ def setupGPIOForProximitySensor():
 
     # Set ProximityTriggerPin to false before we start the experiment
     GPIO.output(ProximityTriggerPin, False)
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # Util method to setup GPIO for Stepper Motor
@@ -263,6 +249,7 @@ def shouldSendEmail(statusType):
     else:
         return False
 
+
 # ---------------------------------------------------------------------------------------------------------------------
 #
 # ---------------------------------------------------------------------------------------------------------------------
@@ -273,3 +260,27 @@ def shouldSendSMS(statusType):
         return True
     else:
         return False
+
+
+def loadConfigFromDb():
+    global EnableEmailNotifications, EnableSMSNotifications, EnablePumpFunctions, data_no_of_hours, graph_no_of_hours
+    global maxTimeToKeepPumpOnInSeconds, timeToKeepPumpOnInSecondsForFullWaterCapacity
+
+    EnableEmailNotifications = str(getOrSetValueFromDB('EnableEmailNotifications',EnableEmailNotifications))
+    EnableSMSNotifications = str(getOrSetValueFromDB('EnableSMSNotifications',EnableSMSNotifications))
+    EnablePumpFunctions = str(getOrSetValueFromDB('EnablePumpFunctions',EnablePumpFunctions))
+    data_no_of_hours = int(getOrSetValueFromDB('data_no_of_hours',data_no_of_hours))
+    graph_no_of_hours = int(getOrSetValueFromDB('graph_no_of_hours',graph_no_of_hours))
+    maxTimeToKeepPumpOnInSeconds = float(getOrSetValueFromDB('maxTimeToKeepPumpOnInSeconds',maxTimeToKeepPumpOnInSeconds))
+    timeToKeepPumpOnInSecondsForFullWaterCapacity = float(getOrSetValueFromDB(
+        'timeToKeepPumpOnInSecondsForFullWaterCapacity',timeToKeepPumpOnInSecondsForFullWaterCapacity))
+
+
+def getOrSetValueFromDB(propertyName, currentValue):
+    value = getConfigValue(propertyName)
+    if value is None:
+        updateConfigValue(propertyName,currentValue,datetime.datetime.now())
+        return currentValue
+    else:
+        return value
+

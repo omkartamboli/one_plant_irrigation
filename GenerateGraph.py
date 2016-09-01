@@ -1,12 +1,16 @@
 import plotly.plotly as py
 import plotly.graph_objs as go
-from GPIOConfig import graph_no_of_hours, Moisture_Low_Value, Water_Low_Value_Percentage, ContainerDepth
+from GPIOConfig import graph_no_of_hours, Moisture_Low_Value, Water_Low_Value_Percentage, ContainerDepth, loadConfigFromDb
 from dbFunctions import *
 from GraphConfig import *
 from EventNames import *
 
 
 def plot_graph(isOnline):
+
+    # Load configuration from DB
+    loadConfigFromDb()
+
     result1 = getEventLogOfLastNHours(graph_no_of_hours, CheckMoistureLevelEvent)
     result2 = getEventLogOfLastNHours(graph_no_of_hours, WaterPlantEvent)
     result3 = getEventLogOfLastNHours(graph_no_of_hours, CheckTemperatureEvent)

@@ -1,19 +1,18 @@
 {% extends "base_template.html" %}
 {% block content %}
-        {% if message %}
-            <div class="jumbotron">
-                <h3> <span style="color: red; background-color: white; width: 100%; height: 100%; vertical-align: middle;"> {{message}} </span></h3>
-            </div>
-        {% endif %}
-
-        <div class="jumbotron">
-            <form class="form-login" method="POST" action="/login" style="max-width: 400px; margin: auto; width: 60%;">
-                {{ form.csrf_token }}
-                {{ form.username(size=20, class_="form-control", placeholder="Username") }}
-                <br />
-                {{ form.password(size=20, class_="form-control", placeholder="Password") }}
-                <br />
-                <button id="btnLogin" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
-            </form>
-        </div>
+    {% if message %}
+    <div class="error">
+        {{message}}
+    </div>
+    {% endif %}
+    <div class="jumbotron">
+        <form class="form-login" method="POST" action="/login" style="max-width: 400px; margin: auto; width: 60%;">
+            {{ form.csrf_token }}
+            {{ form.username(size=20, class_="form-control", placeholder="Username") }}
+            <br />
+            {{ form.password(size=20, class_="form-control", placeholder="Password") }}
+            <br />
+            <button id="btnLogin" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        </form>
+    </div>
 {% endblock %}'

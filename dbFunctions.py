@@ -39,6 +39,7 @@ def createEvent(eventType, eventAnalogValue, eventDigitalValue, eventTime):
         dbConnection = None
 
         rationalisedAnalogValue = getRationalisedAnalogValue(eventType, eventAnalogValue)
+        #rationalisedAnalogValue = eventAnalogValue
 
         sql = "INSERT INTO EventLog(eventTime, eventType, eventAnalogValue, eventDigitalValue) VALUES (%s, %s, %s, %s)"
 
@@ -402,6 +403,44 @@ def getConfigValue(propertyName):
         if dbConnection is not None:
             closeDBConnection(dbConnection)
 
+def updateConfigValue(propertyName, propertyValue, timestamp):
+
+    if propertyName is None:
+        return False
+
+    dbConnection = None
+
+    sql = "UPDATE AppConfig set value = %s , modificationTime = %s WHERE property = %s"
+
+    try:
+        dbConnection = getDBConnection()
+
+        try:
+            # Execute the SQL command
+            cursor = dbConnection.cursor()
+            cursor.execute(sql, (propertyValue, timestamp, propertyName))
+            dbConnection.commit()
+            return True
+
+        except Exception as e:
+            logging.error("Failed to update config information for {0} property".format(str(propertyName)))
+            logging.error(traceback.format_exc())
+            logging.error(e.__doc__)
+            logging.error(e.message)
+            dbConnection.rollback()
+            return False
+
+    except Exception as e:
+        logging.error("Failed to update config information for {0} property".format(str(propertyName)))
+        logging.error(traceback.format_exc())
+        logging.error(e.__doc__)
+        logging.error(e.message)
+        return False
+
+    finally:
+        if dbConnection is not None:
+            closeDBConnection(dbConnection)
+
 
 def createUser(username, hashedPassword):
     if username is None or hashedPassword is None:
@@ -439,6 +478,9 @@ def createUser(username, hashedPassword):
 
 
 def getRationalisedAnalogValue(eventName, currentAnalogValue):
+
+    if eventName == WaterPlantEvent:
+        return currentAnalogValue
 
     lastAnalogValue = float(getLatestAnalogValueForEvent(eventName))
 
