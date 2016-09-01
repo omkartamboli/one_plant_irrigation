@@ -1,6 +1,6 @@
 import plotly.plotly as py
 import plotly.graph_objs as go
-from GPIOConfig import graph_no_of_hours, Moisture_Low_Value, Water_Low_Value_Percentage, ContainerDepth, loadConfigFromDb
+from GPIOConfig import graph_no_of_hours, Moisture_Low_Value, Water_Low_Value_Percentage, ContainerDepth, getOrSetValueFromDB
 from dbFunctions import *
 from GraphConfig import *
 from EventNames import *
@@ -8,14 +8,13 @@ from EventNames import *
 
 def plot_graph(isOnline):
 
-    # Load configuration from DB
-    loadConfigFromDb()
+    graph_no_of_hours_val = int(getOrSetValueFromDB('graph_no_of_hours', graph_no_of_hours))
 
-    result1 = getEventLogOfLastNHours(graph_no_of_hours, CheckMoistureLevelEvent)
-    result2 = getEventLogOfLastNHours(graph_no_of_hours, WaterPlantEvent)
-    result3 = getEventLogOfLastNHours(graph_no_of_hours, CheckTemperatureEvent)
-    result4 = getEventLogOfLastNHours(graph_no_of_hours, CheckHumidityEvent)
-    result5 = getEventLogOfLastNHours(graph_no_of_hours, CheckWaterLevelEvent)
+    result1 = getEventLogOfLastNHours(graph_no_of_hours_val, CheckMoistureLevelEvent)
+    result2 = getEventLogOfLastNHours(graph_no_of_hours_val, WaterPlantEvent)
+    result3 = getEventLogOfLastNHours(graph_no_of_hours_val, CheckTemperatureEvent)
+    result4 = getEventLogOfLastNHours(graph_no_of_hours_val, CheckHumidityEvent)
+    result5 = getEventLogOfLastNHours(graph_no_of_hours_val, CheckWaterLevelEvent)
 
     trace0 = None
     trace00 = None
@@ -179,18 +178,15 @@ def plot_graph(isOnline):
 
         py.image.save_as(fig, "./static/graph.png")
 
-
-        # logging.warn("No Event log data for last {0} hours".format(str(graph_no_of_hours)))
-
     except Exception as e:
         logging.error(traceback.format_exc())
         logging.error(e.__doc__)
         logging.error(e.message)
-        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours)))
+        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours_val)))
 
     except:
         logging.error(traceback.format_exc())
-        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours)))
+        logging.error("Some exception while creating graph for last {0} hours".format(str(graph_no_of_hours_val)))
 
 
 if __name__ == "__main__":

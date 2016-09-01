@@ -261,21 +261,7 @@ def shouldSendSMS(statusType):
     else:
         return False
 
-
-def loadConfigFromDb():
-    global EnableEmailNotifications, EnableSMSNotifications, EnablePumpFunctions, data_no_of_hours, graph_no_of_hours
-    global maxTimeToKeepPumpOnInSeconds, timeToKeepPumpOnInSecondsForFullWaterCapacity
-
-    EnableEmailNotifications = str(getOrSetValueFromDB('EnableEmailNotifications',EnableEmailNotifications))
-    EnableSMSNotifications = str(getOrSetValueFromDB('EnableSMSNotifications',EnableSMSNotifications))
-    EnablePumpFunctions = str(getOrSetValueFromDB('EnablePumpFunctions',EnablePumpFunctions))
-    data_no_of_hours = int(getOrSetValueFromDB('data_no_of_hours',data_no_of_hours))
-    graph_no_of_hours = int(getOrSetValueFromDB('graph_no_of_hours',graph_no_of_hours))
-    maxTimeToKeepPumpOnInSeconds = float(getOrSetValueFromDB('maxTimeToKeepPumpOnInSeconds',maxTimeToKeepPumpOnInSeconds))
-    timeToKeepPumpOnInSecondsForFullWaterCapacity = float(getOrSetValueFromDB(
-        'timeToKeepPumpOnInSecondsForFullWaterCapacity',timeToKeepPumpOnInSecondsForFullWaterCapacity))
-
-
+# Load configuration from DB
 def getOrSetValueFromDB(propertyName, currentValue):
     value = getConfigValue(propertyName)
     if value is None:
@@ -283,4 +269,15 @@ def getOrSetValueFromDB(propertyName, currentValue):
         return currentValue
     else:
         return value
+
+
+EnableEmailNotifications = str(getOrSetValueFromDB('EnableEmailNotifications',EnableEmailNotifications))
+EnableSMSNotifications = str(getOrSetValueFromDB('EnableSMSNotifications',EnableSMSNotifications))
+EnablePumpFunctions = str(getOrSetValueFromDB('EnablePumpFunctions',EnablePumpFunctions))
+data_no_of_hours = int(getOrSetValueFromDB('data_no_of_hours',data_no_of_hours))
+graph_no_of_hours = int(getOrSetValueFromDB('graph_no_of_hours',graph_no_of_hours))
+maxTimeToKeepPumpOnInSeconds = float(getOrSetValueFromDB('maxTimeToKeepPumpOnInSeconds',maxTimeToKeepPumpOnInSeconds))
+timeToKeepPumpOnInSecondsForFullWaterCapacity = float(getOrSetValueFromDB(
+    'timeToKeepPumpOnInSecondsForFullWaterCapacity',timeToKeepPumpOnInSecondsForFullWaterCapacity))
+
 

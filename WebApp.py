@@ -1,6 +1,6 @@
 from flask import *
 from dbFunctions import getEventLogOfLastNHours, getLatestEventsData, updateConfigValue
-from GPIOConfig import data_no_of_hours, graph_no_of_hours, project_description, getConfigValue, loadConfigFromDb
+from GPIOConfig import data_no_of_hours, graph_no_of_hours, getConfigValue, getOrSetValueFromDB
 from WebAppConfig import *
 from EventNames import CheckMoistureLevelEvent
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user, set_login_view
@@ -48,20 +48,19 @@ def home():
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('home.html', project_description=project_description,
-                           isMobileRequest=isMobileRequest(request))
+    return render_template('home.html', isMobileRequest=isMobileRequest(request))
 
 
 @app.route("/dashboard")
 def dashboard():
-    # Load configuration from DB
-    loadConfigFromDb()
+    graph_no_of_hours_val = int(getOrSetValueFromDB('graph_no_of_hours', graph_no_of_hours))
+    data_no_of_hours_val = int(getOrSetValueFromDB('data_no_of_hours', data_no_of_hours))
 
-    result = getEventLogOfLastNHours(data_no_of_hours, CheckMoistureLevelEvent)
+    result = getEventLogOfLastNHours(data_no_of_hours_val, CheckMoistureLevelEvent)
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('dashboard.html', graph_no_of_hours=graph_no_of_hours, data_no_of_hours=data_no_of_hours,
+    return render_template('dashboard.html', graph_no_of_hours=graph_no_of_hours_val, data_no_of_hours=data_no_of_hours_val,
                            data=data, isMobileRequest=isMobileRequest(request))
 
 
@@ -135,10 +134,6 @@ def turnOnTap():
             if secondsInFloat is not None and (secondsInFloat < 0 or secondsInFloat > 10):
                 message = "Invalid value, enter value between 0 and 10"
             else:
-
-                # Load configuration from DB
-                loadConfigFromDb()
-
                 result = turnOnWaterForCorrectSeconds(datetime.datetime.now(), secondsInFloat)
                 if result:
                     message = "Plant Watered !!!"
