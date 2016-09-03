@@ -27,3 +27,4 @@ class AppConfigForm(Form):
     maxTimeToKeepPumpOnInSeconds = FloatField('Pump Max (Seconds)', validators=[DataRequired()])
     timeToKeepPumpOnInSecondsForFullWaterCapacity = FloatField('Pump Full Capacity (Seconds)',
                                                                validators=[DataRequired()])
+    no_of_mins_for_rational_value = FloatField('Minutes for rational value', validators=[DataRequired()])

@@ -339,7 +339,7 @@ def getNumberOfXEventsInLastNMinutes(eventName, minutes):
         try:
             # Execute the SQL command
             cursor = dbConnection.cursor()
-            cursor.execute(sql, (eventName, minutes))
+            cursor.execute(sql, (minutes,eventName))
 
             if cursor.rowcount > 0:
                 return cursor.fetchone()[0]
@@ -488,9 +488,18 @@ def getRationalisedAnalogValue(eventName, currentAnalogValue):
         deviation = 10
 
     elif eventName in (CheckMoistureLevelEvent,CheckWaterLevelEvent):
-        deviation = 5 if getNumberOfXEventsInLastNMinutes(WaterPlantEvent,5) == 0 else 100
+        var_no_of_mins_for_rational_value = getConfigValue('no_of_mins_for_rational_value')
+        if var_no_of_mins_for_rational_value is None:
+            var_no_of_mins_for_rational_value = 21
+        if (getNumberOfXEventsInLastNMinutes(WaterPlantEvent,var_no_of_mins_for_rational_value) == 0):
+            deviation = 5
+        else:
+            deviation = 100
 
-    observed_deviation = (abs(float(currentAnalogValue) - lastAnalogValue) / lastAnalogValue ) * 100
+    observed_deviation = ((currentAnalogValue - lastAnalogValue) / lastAnalogValue) * 100
+
+    if observed_deviation < 0:
+        observed_deviation *= -1
 
     if observed_deviation > deviation:
         return lastAnalogValue

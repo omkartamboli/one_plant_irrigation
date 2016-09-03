@@ -40,6 +40,7 @@ def loadAppConfigFormFromDB():
     form.maxTimeToKeepPumpOnInSeconds.data = getConfigValue('maxTimeToKeepPumpOnInSeconds')
     form.timeToKeepPumpOnInSecondsForFullWaterCapacity.data = getConfigValue(
         'timeToKeepPumpOnInSecondsForFullWaterCapacity')
+    form.no_of_mins_for_rational_value.data = getConfigValue('no_of_mins_for_rational_value')
     return form
 
 @app.route("/")
@@ -125,27 +126,28 @@ def updateData():
 @login_required
 def turnOnTap():
     form = TurnOnTapForm()
-    message = None
+    messageError = None
+    messageInfo = None
     if form.validate_on_submit():
         seconds = form.secondsInFloat.data
         try:
             secondsInFloat = None if seconds is None else float(seconds)
 
             if secondsInFloat is not None and (secondsInFloat < 0 or secondsInFloat > 10):
-                message = "Invalid value, enter value between 0 and 10"
+                messageError = "Invalid value, enter value between 0 and 10"
             else:
                 result = turnOnWaterForCorrectSeconds(datetime.datetime.now(), secondsInFloat)
                 if result:
-                    message = "Plant Watered !!!"
+                    messageInfo = "Plant Watered !!!"
                 else:
-                    message = "No enough water in container to water plant !!!"
+                    messageError = "No enough water in container to water plant !!!"
         except ValueError:
-            message = "Invalid input, Only float values accepted !!!"
+            messageError = "Invalid input, Only float values accepted !!!"
     else:
-        message = "Invalid operation !!!"
+        messageError = "Invalid operation !!!"
 
     return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
-                           formAppConfig=loadAppConfigFormFromDB(), message=message)
+                           formAppConfig=loadAppConfigFormFromDB(), messageError=messageError, messageInfo=messageInfo)
 
 
 @app.route("/changeConfig", methods=["POST"])
@@ -164,9 +166,11 @@ def changeConfig():
         updateConfigValue('maxTimeToKeepPumpOnInSeconds', form.maxTimeToKeepPumpOnInSeconds.data, timestamp)
         updateConfigValue('timeToKeepPumpOnInSecondsForFullWaterCapacity',
                           form.timeToKeepPumpOnInSecondsForFullWaterCapacity.data, timestamp)
+        updateConfigValue('no_of_mins_for_rational_value',form.no_of_mins_for_rational_value.data, timestamp)
 
+        configInfoMessage = "Configuration updated in database !!!"
         return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
-                               formAppConfig=loadAppConfigFormFromDB())
+                               formAppConfig=loadAppConfigFormFromDB(), configInfoMessage=configInfoMessage)
     else:
         configErrorMessage = "Invalid data, varify the inputs !!!"
         return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),

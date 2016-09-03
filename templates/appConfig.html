@@ -40,9 +40,14 @@
             </form>
         </div>
 
-        {% if message %}
+        {% if messageInfo %}
+            <div class="info">
+                {{messageInfo}}
+            </div>
+        {% endif %}
+        {% if messageError %}
             <div class="error">
-                {{message}}
+                {{messageError}}
             </div>
         {% endif %}
         <div class="jumbotron">
@@ -68,6 +73,12 @@
                 {{configErrorMessage}}
             </div>
         {% endif %}
+        {% if configInfoMessage %}
+            <div class="info">
+                {{configInfoMessage}}
+            </div>
+        {% endif %}
+
         <div class="jumbotron">
             {% from "_formhelpers.html" import render_field_errors %}
             <form class="form-changeConfig" name="formChangeConfig" id="formChangeConfig" method="POST" action="/changeConfig" style="max-width: 400px; margin: auto; width: 60%;">
@@ -152,6 +163,22 @@
                         </tr>
                     </table>
                 </fieldset>
+
+                <fieldset>
+                    <legend>Other Config:</legend>
+                    <table width="100%">
+                        <tr>
+                            <td width="60%" style="text-align: left;padding-left: 20px; padding-bottom: 20px">
+                                {{ formAppConfig.no_of_mins_for_rational_value.label }}
+                            </td>
+                            <td width="40%" style="text-align: left;padding-right: 20px; padding-bottom: 20px">
+                                {{ formAppConfig.no_of_mins_for_rational_value(size=4, class_="form-control") }}
+                                {{ render_field_errors(formAppConfig.no_of_mins_for_rational_value)}}
+                            </td>
+                        </tr>
+                    </table>
+                </fieldset>
+
 
                 <button id="btnChangeConfig" class="btn btn-lg btn-primary btn-block" type="submit">Change Config </button>
             </form>
