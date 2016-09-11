@@ -13,6 +13,10 @@ class TurnOnTapForm(Form):
     secondsInFloat = StringField('Seconds to turn on tap for', validators=[Optional()])
 
 
+class TurnOnRefillTapForm(Form):
+    secondsInFloat = StringField('Seconds to turn on refill tap for', validators=[DataRequired()])
+
+
 class AppConfigForm(Form):
     EnableEmailNotifications = RadioField('Enable Email', validators=[DataRequired()],
                                           choices=[('True', 'On'), ('False', 'Off')])

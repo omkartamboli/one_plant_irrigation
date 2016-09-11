@@ -4,10 +4,10 @@ import datetime
 from ProximitySensorFunctions import isEnoughWaterToOpenTap
 
 
-def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
-    GPIO.output(WaterPumpPin, True)
+def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime, waterPin):
+    GPIO.output(waterPin, True)
     time.sleep(secondsInFloat)
-    GPIO.output(WaterPumpPin, False)
+    GPIO.output(waterPin, False)
 
     logging.info("turnOnWaterPumpForNSeconds-> Pump was on for {0} seconds, at {1}".format(secondsInFloat, eventTime))
 
@@ -15,13 +15,13 @@ def turnOnWaterPumpForNSeconds(secondsInFloat, eventTime):
         createEvent(WaterPlantEvent, secondsInFloat, True, eventTime)
 
 
-def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
+def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat, waterPin):
     try:
         # Setup GPIO for experiment
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(WaterPumpPin, GPIO.OUT)
+        GPIO.setup(waterPin, GPIO.OUT)
 
-        turnOnWaterPumpForNSeconds(secondsInFloat, None)
+        turnOnWaterPumpForNSeconds(secondsInFloat, None, waterPin)
 
     except KeyboardInterrupt:
         logging.error("Program terminated on user interrupt.")
@@ -37,6 +37,10 @@ def turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat):
 
     finally:
         cleanupGPIO()
+
+
+def turnOnRefillWaterPumpForNSecondsStandAloneMode(secondsInFloat):
+    turnOnWaterPumpForNSecondsStandAloneMode(secondsInFloat, RefillWaterPumpPin)
 
 
 def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
@@ -55,10 +59,10 @@ def turnOnWaterForCorrectSeconds(eventTime, overrideSeconds):
 
         if overrideSeconds is None:
             timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.05)
-            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
+            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime, WaterPumpPin)
             logging.info("Plant watered for {0} seconds".format(timeToKeepPumpOn))
         else:
-            turnOnWaterPumpForNSeconds(overrideSeconds, eventTime)
+            turnOnWaterPumpForNSeconds(overrideSeconds, eventTime, WaterPumpPin)
             logging.info("Plant watered for {0} seconds".format(overrideSeconds))
 
     return enoughWater
@@ -74,7 +78,7 @@ if __name__ == '__main__':
             if newTime > 0:
                 timeToKeepPumpOn = newTime
 
-        turnOnWaterPumpForNSecondsStandAloneMode(timeToKeepPumpOn)
+        turnOnWaterPumpForNSecondsStandAloneMode(timeToKeepPumpOn, WaterPumpPin)
 
     except KeyboardInterrupt:
         logging.error("Program terminated on user interrupt.")

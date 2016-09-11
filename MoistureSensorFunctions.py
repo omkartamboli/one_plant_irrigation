@@ -65,7 +65,7 @@ def callback():
             # If container level goes down, then open tap for longer time as it takes more effort to raise water when
             # container has less water
             timeToKeepPumpOn = timeToKeepPumpOnInSecondsForFullWaterCapacity + ((100.00 - water_percentage) * 0.1)
-            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime)
+            turnOnWaterPumpForNSeconds(timeToKeepPumpOn, eventTime, WaterPumpPin)
 
         else:
 

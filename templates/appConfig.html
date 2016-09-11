@@ -68,6 +68,36 @@
             </form>
         </div>
 
+
+        {% if refillMessageInfo %}
+            <div class="info">
+                {{refillMessageInfo}}
+            </div>
+        {% endif %}
+        {% if refillMessageError %}
+            <div class="error">
+                {{refillMessageError}}
+            </div>
+        {% endif %}
+        <div class="jumbotron">
+
+            <form class="form-turnOnRefillTap" name="formTurnOnRefillTap" id="formTurnOnRefillTap" method="POST" action="/turnOnRefillTap" style="max-width: 400px; margin: auto; width: 60%;">
+                {{ formTurnOnRefillTap.csrf_token }}
+                <table width="100%">
+                    <tr>
+                        <td width="60%" style="text-align: left;padding-left: 20px; padding-bottom: 20px">
+                            {{ formTurnOnRefillTap.secondsInFloat.label }}
+                        </td>
+                        <td width="40%" style="text-align: left;padding-right: 20px; padding-bottom: 20px">
+                            {{ formTurnOnRefillTap.secondsInFloat(size=4, class_="form-control") }}
+                        </td>
+                    </tr>
+                </table>
+                <button id="btnTurnOnRefillTap" class="btn btn-lg btn-primary btn-block" type="submit">Turn On Refill Tap </button>
+            </form>
+        </div>
+
+
         {% if configErrorMessage %}
             <div class="error">
                 {{configErrorMessage}}

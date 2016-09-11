@@ -5,10 +5,10 @@ from WebAppConfig import *
 from EventNames import CheckMoistureLevelEvent
 from flask_login import LoginManager, login_required, login_user, logout_user, current_user, set_login_view
 from User import *
-from Forms import LoginForm, TurnOnTapForm, AppConfigForm
+from Forms import LoginForm, TurnOnTapForm, AppConfigForm, TurnOnRefillTapForm
 from flask_bcrypt import Bcrypt
 from GenerateGraph import plot_graph
-from WaterPumpFunctions import turnOnWaterForCorrectSeconds
+from WaterPumpFunctions import turnOnWaterForCorrectSeconds, turnOnRefillWaterPumpForNSecondsStandAloneMode
 import datetime
 import logging
 import os
@@ -30,6 +30,7 @@ db.init_app(app)
 
 phones = ["iphone", "android", "blackberry"]
 
+
 def loadAppConfigFormFromDB():
     form = AppConfigForm(csrf_enabled=True)
     form.EnableEmailNotifications.data = str(getConfigValue('EnableEmailNotifications'))
@@ -42,6 +43,7 @@ def loadAppConfigFormFromDB():
         'timeToKeepPumpOnInSecondsForFullWaterCapacity')
     form.no_of_mins_for_rational_value.data = getConfigValue('no_of_mins_for_rational_value')
     return form
+
 
 @app.route("/")
 def home():
@@ -61,7 +63,8 @@ def dashboard():
     data = [dict(eventTime=row[0],
                  eventAnalogValue=row[1]) for row in result]
 
-    return render_template('dashboard.html', graph_no_of_hours=graph_no_of_hours_val, data_no_of_hours=data_no_of_hours_val,
+    return render_template('dashboard.html', graph_no_of_hours=graph_no_of_hours_val,
+                           data_no_of_hours=data_no_of_hours_val,
                            data=data, isMobileRequest=isMobileRequest(request))
 
 
@@ -92,6 +95,7 @@ def login():
 @login_required
 def appConfig():
     return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
+                           formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
                            formAppConfig=loadAppConfigFormFromDB())
 
 
@@ -119,6 +123,7 @@ def updateGraph():
 def updateData():
     data = getLatestEventsData()
     return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
+                           formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
                            formAppConfig=loadAppConfigFormFromDB(), data=data)
 
 
@@ -147,7 +152,33 @@ def turnOnTap():
         messageError = "Invalid operation !!!"
 
     return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
+                           formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
                            formAppConfig=loadAppConfigFormFromDB(), messageError=messageError, messageInfo=messageInfo)
+
+
+@app.route("/turnOnRefillTap", methods=["POST"])
+@login_required
+def turnOnRefillTap():
+    form = TurnOnRefillTapForm()
+    refillMessageError = None
+    refillMessageInfo = None
+    if form.validate_on_submit():
+        try:
+            secondsInFloat = float(form.secondsInFloat.data)
+            if secondsInFloat is None:
+                refillMessageError = "Invalid input, Only float values accepted !!!"
+            else:
+                turnOnRefillWaterPumpForNSecondsStandAloneMode(secondsInFloat)
+                refillMessageInfo = "Container Refilled for {0} seconds !!!".format(secondsInFloat)
+        except ValueError:
+            refillMessageError = "Invalid input, Only float values accepted !!!"
+    else:
+        refillMessageError = "Invalid input, Only float values accepted !!!"
+
+    return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
+                           formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
+                           formAppConfig=loadAppConfigFormFromDB(), refillMessageError=refillMessageError,
+                           refillMessageInfo=refillMessageInfo)
 
 
 @app.route("/changeConfig", methods=["POST"])
@@ -166,17 +197,17 @@ def changeConfig():
         updateConfigValue('maxTimeToKeepPumpOnInSeconds', form.maxTimeToKeepPumpOnInSeconds.data, timestamp)
         updateConfigValue('timeToKeepPumpOnInSecondsForFullWaterCapacity',
                           form.timeToKeepPumpOnInSecondsForFullWaterCapacity.data, timestamp)
-        updateConfigValue('no_of_mins_for_rational_value',form.no_of_mins_for_rational_value.data, timestamp)
+        updateConfigValue('no_of_mins_for_rational_value', form.no_of_mins_for_rational_value.data, timestamp)
 
         configInfoMessage = "Configuration updated in database !!!"
         return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
+                               formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
                                formAppConfig=loadAppConfigFormFromDB(), configInfoMessage=configInfoMessage)
     else:
         configErrorMessage = "Invalid data, varify the inputs !!!"
         return render_template('appConfig.html', formTurnOnTap=TurnOnTapForm(csrf_enabled=True),
-                       formAppConfig=AppConfigForm(csrf_enabled=True), configErrorMessage=configErrorMessage)
-
-
+                               formTurnOnRefillTap=TurnOnRefillTapForm(csrf_enabled=True),
+                               formAppConfig=AppConfigForm(csrf_enabled=True), configErrorMessage=configErrorMessage)
 
 
 def isMobileRequest(request):
